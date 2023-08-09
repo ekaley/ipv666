@@ -9,19 +9,13 @@ import (
 	"github.com/lavalamp-/ipv666/internal/modeling"
 )
 
-func IPv6AddrGen(modelPath string, outputPath string, fromNetwork string, genCount int) ([]*net.IP, error) {
+func IPv6AddrGen(fromNetwork string, genCount int) ([]*net.IP, error) {
 
 	var clusterModel *modeling.ClusterModel
 	var err error
 
-	if modelPath == "" {
-		// logging.Info("No model path specified. Using default model packaged with IPv666.")
-		clusterModel, err = data.GetProbabilisticClusterModel()
-	} else {
-		// logging.Infof("Using cluster model found at path '%s'.", modelPath)
-		clusterModel, err = modeling.LoadModelFromFile(modelPath)
-	}
-
+	// logging.Info("No model path specified. Using default model packaged with IPv666.")
+	clusterModel, err = data.GetProbabilisticClusterModel()
 	if err != nil {
 		return nil, fmt.Errorf("loading randomness error %s", err)
 	}
