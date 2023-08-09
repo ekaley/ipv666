@@ -1,8 +1,8 @@
 package generate
 
 import (
-	"github.com/lavalamp-/ipv666/internal/app"
-	"github.com/lavalamp-/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/app"
+	"github.com/ekaley/ipv666/internal/logging"
 	"github.com/spf13/cobra"
 	"os"
 	"strings"
@@ -23,9 +23,9 @@ for the 'scan' command.
 `)
 
 var blgenCmd = &cobra.Command{
-	Use:			"blacklist",
-	Short:			"Generate a scanning blacklist",
-	Long:			blgenLongDesc,
+	Use:   "blacklist",
+	Short: "Generate a scanning blacklist",
+	Long:  blgenLongDesc,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 
 		inputPath, err := cmd.PersistentFlags().GetString("input")

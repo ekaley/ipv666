@@ -1,10 +1,10 @@
 package blacklist
 
 import (
-	"testing"
-	"net"
+	"github.com/ekaley/ipv666/internal/addressing"
 	"github.com/stretchr/testify/assert"
-	"github.com/lavalamp-/ipv666/internal/addressing"
+	"net"
+	"testing"
 )
 
 //func TestNetworkBlacklist_AddNetworksAddedNoDupes(t *testing.T) {

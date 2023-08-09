@@ -36,7 +36,7 @@ First you'll need to have the [Golang environment installed](https://golang.org/
 Once you have Golang `v1.11` or above installed, do the following:
 
 ```$xslt
-go get github.com/lavalamp-/ipv666/ipv666
+go get github.com/ekaley/ipv666/ipv666
 ```
 
 Once this command completes you should have the `ipv666` binary on your path. If you don't, double check to make sure that `$GOPATH/bin` is in your `PATH`.

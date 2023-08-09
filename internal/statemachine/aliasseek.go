@@ -3,13 +3,13 @@ package statemachine
 import (
 	"bufio"
 	"errors"
-	"github.com/lavalamp-/ipv666/internal/addressing"
-	"github.com/lavalamp-/ipv666/internal/blacklist"
-	"github.com/lavalamp-/ipv666/internal/config"
-	"github.com/lavalamp-/ipv666/internal/data"
-	"github.com/lavalamp-/ipv666/internal/fs"
-	"github.com/lavalamp-/ipv666/internal/logging"
-	"github.com/lavalamp-/ipv666/internal/pingscan"
+	"github.com/ekaley/ipv666/internal/addressing"
+	"github.com/ekaley/ipv666/internal/blacklist"
+	"github.com/ekaley/ipv666/internal/config"
+	"github.com/ekaley/ipv666/internal/data"
+	"github.com/ekaley/ipv666/internal/fs"
+	"github.com/ekaley/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/pingscan"
 	"github.com/rcrowley/go-metrics"
 	"github.com/spf13/viper"
 	"net"
@@ -38,16 +38,16 @@ func init() {
 }
 
 type seekPair struct {
-	network		*net.IPNet
-	address		*net.IP
-	count		uint8
+	network *net.IPNet
+	address *net.IP
+	count   uint8
 }
 
 func newSeekPair(network *net.IPNet, addr *net.IP, count uint8) *seekPair {
 	return &seekPair{
-		network:	network,
-		address:	addr,
-		count:		count,
+		network: network,
+		address: addr,
+		count:   count,
 	}
 }
 
@@ -241,7 +241,7 @@ func generateAliasCandidates(nets []*net.IPNet) (string, error) {
 	writer := bufio.NewWriter(file)
 
 	for i, networks := range nets {
-		if i % viper.GetInt("LogLoopEmitFreq") == 0 {
+		if i%viper.GetInt("LogLoopEmitFreq") == 0 {
 			logging.Debugf("Generating addresses for network %d out of %d.", i, len(nets))
 		}
 		addrs = append(addrs, addressing.GenerateRandomAddressesInNetwork(networks, viper.GetInt("NetworkPingCount"))...)
@@ -273,8 +273,8 @@ func getSeekPairsFromScanResults(nets []*net.IPNet, addrs []*net.IP) []*seekPair
 	netList := blacklist.NewNetworkBlacklist(nets)
 	presenceTracker := make(map[string]*seekPair)
 
-	for i, addr :=  range addrs {
-		if i % viper.GetInt("LogLoopEmitFreq") == 0 {
+	for i, addr := range addrs {
+		if i%viper.GetInt("LogLoopEmitFreq") == 0 {
 			logging.Debugf("Checking address %d out of %d.", i, len(addrs))
 		}
 		addrNetwork := netList.GetBlacklistingNetworkFromIP(addr)

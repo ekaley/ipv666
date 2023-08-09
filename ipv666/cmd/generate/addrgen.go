@@ -1,8 +1,8 @@
 package generate
 
 import (
-	"github.com/lavalamp-/ipv666/internal/app"
-	"github.com/lavalamp-/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/app"
+	"github.com/ekaley/ipv666/internal/logging"
 	"github.com/spf13/cobra"
 	"net"
 	"os"
@@ -27,9 +27,9 @@ the default included cluster model or a cluster model that you specify.
 `)
 
 var addrgenCmd = &cobra.Command{
-	Use:			"addresses",
-	Short:			"Generate IPv6 addresses",
-	Long:			addrgenLongDesc,
+	Use:   "addresses",
+	Short: "Generate IPv6 addresses",
+	Long:  addrgenLongDesc,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 
 		modelPath, err := cmd.PersistentFlags().GetString("model")

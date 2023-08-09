@@ -1,10 +1,10 @@
 package statemachine
 
 import (
-	"github.com/lavalamp-/ipv666/internal/addressing"
-	"github.com/lavalamp-/ipv666/internal/config"
-	"github.com/lavalamp-/ipv666/internal/data"
-	"github.com/lavalamp-/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/addressing"
+	"github.com/ekaley/ipv666/internal/config"
+	"github.com/ekaley/ipv666/internal/data"
+	"github.com/ekaley/ipv666/internal/logging"
 	"github.com/rcrowley/go-metrics"
 	"github.com/spf13/viper"
 	"net"
@@ -12,8 +12,8 @@ import (
 
 	"errors"
 	"fmt"
-	"github.com/lavalamp-/ipv666/internal/filtering"
-	"github.com/lavalamp-/ipv666/internal/fs"
+	"github.com/ekaley/ipv666/internal/filtering"
+	"github.com/ekaley/ipv666/internal/fs"
 	bloom2 "github.com/willf/bloom"
 	"os"
 )
@@ -86,8 +86,8 @@ func generateCandidateAddresses() error {
 			bloom.Add(ipBytes)
 			toReturn = false
 		}
-		if (madeCount + blacklistCount + totalBloomCount) % viper.GetInt("LogLoopEmitFreq") == 0 {
-			logging.Infof("Generated %d total addresses, %d have been valid, %d have been blacklisted, %d exist in Bloom filter.", madeCount + blacklistCount + totalBloomCount, madeCount, blacklistCount, totalBloomCount)
+		if (madeCount+blacklistCount+totalBloomCount)%viper.GetInt("LogLoopEmitFreq") == 0 {
+			logging.Infof("Generated %d total addresses, %d have been valid, %d have been blacklisted, %d exist in Bloom filter.", madeCount+blacklistCount+totalBloomCount, madeCount, blacklistCount, totalBloomCount)
 		}
 		if curBloomCount >= bloomEmptyThreshold {
 			logging.Infof("Bloom filter rejection rate currently exceeds threshold of %d (%d rejected). Emptying and recreating.", bloomEmptyThreshold, curBloomCount)

@@ -5,20 +5,21 @@ import (
 	"compress/zlib"
 	"errors"
 	"fmt"
-	"github.com/gobuffalo/packr/v2"
-	"github.com/lavalamp-/ipv666/internal/addressing"
-	"github.com/lavalamp-/ipv666/internal/blacklist"
-	"github.com/lavalamp-/ipv666/internal/config"
-	"github.com/lavalamp-/ipv666/internal/filtering"
-	"github.com/lavalamp-/ipv666/internal/fs"
-	"github.com/lavalamp-/ipv666/internal/logging"
-	"github.com/lavalamp-/ipv666/internal/modeling"
-	"github.com/spf13/viper"
-	"github.com/willf/bloom"
 	"io/ioutil"
 	"net"
 	"os"
 	"path/filepath"
+
+	"github.com/ekaley/ipv666/internal/addressing"
+	"github.com/ekaley/ipv666/internal/blacklist"
+	"github.com/ekaley/ipv666/internal/config"
+	"github.com/ekaley/ipv666/internal/filtering"
+	"github.com/ekaley/ipv666/internal/fs"
+	"github.com/ekaley/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/modeling"
+	"github.com/gobuffalo/packr/v2"
+	"github.com/spf13/viper"
+	"github.com/willf/bloom"
 )
 
 var curCandidatePingResults []*net.IP
@@ -34,7 +35,7 @@ var curBloomFilterPath string
 var curAliasedNetworks []*net.IPNet
 var curAliasedNetworksPath string
 var curClusterModel *modeling.ClusterModel
-var packedBox = packr.New("box","../../assets")
+var packedBox = packr.New("box", "../../assets")
 
 //TODO add unit tests for making sure that the boxed assets are returned
 
@@ -235,7 +236,6 @@ func getBlacklistFromBox() (*blacklist.NetworkBlacklist, error) {
 	return blacklist.NewNetworkBlacklist(nets), nil
 }
 
-
 func UpdateScanResultsNetworkRanges(networks []*net.IPNet, filePath string) {
 	curScanResultsNetworkRanges = networks
 	curScanResultsNetworkRangesPath = filePath
@@ -312,7 +312,7 @@ func GetProbabilisticClusterModel() (*modeling.ClusterModel, error) {
 	return toReturn, nil
 }
 
-func getClusterModelFromBox() (*modeling.ClusterModel, error) {  //TODO generalize fetching from box and decompressing zlib
+func getClusterModelFromBox() (*modeling.ClusterModel, error) { //TODO generalize fetching from box and decompressing zlib
 	content, err := packedBox.Find("clustermodel.zlib")
 	if err != nil {
 		return &modeling.ClusterModel{}, err

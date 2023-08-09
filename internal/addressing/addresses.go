@@ -6,9 +6,9 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/lavalamp-/ipv666/internal"
-	"github.com/lavalamp-/ipv666/internal/logging"
-	"github.com/lavalamp-/ipv666/internal/zrandom"
+	"github.com/ekaley/ipv666/internal"
+	"github.com/ekaley/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/zrandom"
 	"github.com/spf13/viper"
 	"io"
 	"net"
@@ -37,7 +37,7 @@ func GetAdjacentNetworkAddressesFromIP(toParse *net.IP, fromNybble int, toNybble
 	} else if fromNybble == toNybble {
 		return nil, fmt.Errorf("fromNybble and toNybble must be at least one apart (got %d, %d)", fromNybble, toNybble)
 	}
-	toReturn := []*net.IP{ toParse }
+	toReturn := []*net.IP{toParse}
 	ipNybbles := GetNybblesFromIP(toParse, 32)
 	var j uint8
 	curNybbles := make([]uint8, len(ipNybbles))
@@ -90,7 +90,7 @@ func GetUniqueIPs(ips []*net.IP, updateFreq int) []*net.IP { // TODO refactor th
 	checkMap := make(map[string]bool)
 	var toReturn []*net.IP
 	for i, ip := range ips {
-		if i % updateFreq == 0 {
+		if i%updateFreq == 0 {
 			logging.Debugf("Processing %d out of %d for unique IPs.", i, len(ips))
 		}
 		if _, ok := checkMap[ip.String()]; !ok {
@@ -134,7 +134,7 @@ func ReadIPsFromBinaryFile(filePath string) ([]*net.IP, error) {
 		return nil, err
 	}
 	fileSize := fileInfo.Size()
-	if fileSize % 16 != 0 {
+	if fileSize%16 != 0 {
 		return nil, errors.New(fmt.Sprintf("Expected file size to be a multiple of 16 (got %d).", fileSize))
 	}
 	buffer := make([]byte, 16)
@@ -187,14 +187,12 @@ func WriteIPsToFatHexFile(filePath string, addrs []*net.IP) error {
 	return nil
 }
 
-
-
 func GetNybbleFromIP(ip *net.IP, index int) uint8 {
 	// TODO fatal error if index > 31
 	byteIndex := index / 2
 	addrBytes := ([]byte)(*ip)
 	addrByte := addrBytes[byteIndex]
-	if index % 2 == 0 {
+	if index%2 == 0 {
 		return addrByte >> 4
 	} else {
 		return addrByte & 0xf
@@ -213,7 +211,7 @@ func NybblesToIP(nybbles []uint8) *net.IP {
 	var bytes []byte
 	var curByte byte = 0x0
 	for i, curNybble := range nybbles {
-		if i % 2 == 0 {
+		if i%2 == 0 {
 			curByte ^= curNybble << 4
 		} else {
 			curByte ^= curNybble
@@ -247,7 +245,7 @@ func FlipBitsInAddress(toFlip *net.IP, startIndex uint8, endIndex uint8) *net.IP
 			if i == startByte {
 				firstHalf := byte(^(0xff >> startOffset))
 				secondHalf := byte(0xff >> endOffset)
-				maskBytes = append(maskBytes, firstHalf | secondHalf)
+				maskBytes = append(maskBytes, firstHalf|secondHalf)
 			} else {
 				maskBytes = append(maskBytes, 0xff)
 			}
@@ -261,7 +259,7 @@ func FlipBitsInAddress(toFlip *net.IP, startIndex uint8, endIndex uint8) *net.IP
 			} else if i < endByte {
 				maskBytes = append(maskBytes, 0x00)
 			} else if i == endByte {
-				maskBytes = append(maskBytes, byte(0xff >> endOffset))
+				maskBytes = append(maskBytes, byte(0xff>>endOffset))
 			} else {
 				maskBytes = append(maskBytes, 0xff)
 			}
@@ -270,7 +268,7 @@ func FlipBitsInAddress(toFlip *net.IP, startIndex uint8, endIndex uint8) *net.IP
 
 	for i = 0; i < 16; i++ {
 		flippedBits := ^toFlipBytes[i] & ^maskBytes[i]
-		flipBytes = append(flipBytes, toFlipBytes[i] & maskBytes[i] | flippedBits)
+		flipBytes = append(flipBytes, toFlipBytes[i]&maskBytes[i]|flippedBits)
 	}
 
 	toReturn := net.IP(flipBytes)

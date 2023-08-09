@@ -1,11 +1,11 @@
 package statemachine
 
 import (
-	"github.com/lavalamp-/ipv666/internal/blacklist"
-	"github.com/lavalamp-/ipv666/internal/config"
-	"github.com/lavalamp-/ipv666/internal/data"
-	"github.com/lavalamp-/ipv666/internal/fs"
-	"github.com/lavalamp-/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/blacklist"
+	"github.com/ekaley/ipv666/internal/config"
+	"github.com/ekaley/ipv666/internal/data"
+	"github.com/ekaley/ipv666/internal/fs"
+	"github.com/ekaley/ipv666/internal/logging"
 	"github.com/rcrowley/go-metrics"
 	"github.com/spf13/viper"
 	"time"

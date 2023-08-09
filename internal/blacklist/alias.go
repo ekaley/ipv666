@@ -3,19 +3,19 @@ package blacklist
 import (
 	"errors"
 	"fmt"
-	"github.com/lavalamp-/ipv666/internal"
-	"github.com/lavalamp-/ipv666/internal/addressing"
-	"github.com/lavalamp-/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal"
+	"github.com/ekaley/ipv666/internal/addressing"
+	"github.com/ekaley/ipv666/internal/logging"
 	"math"
 	"net"
 )
 
 type AliasCheckState struct {
-	baseAddress			*net.IP
-	leftPosition		uint8
-	rightPosition		uint8
-	found				bool
-	testAddr			*net.IP
+	baseAddress   *net.IP
+	leftPosition  uint8
+	rightPosition uint8
+	found         bool
+	testAddr      *net.IP
 }
 
 func NewAliasCheckState(addr *net.IP, left uint8, right uint8) (*AliasCheckState, error) {
@@ -26,46 +26,46 @@ func NewAliasCheckState(addr *net.IP, left uint8, right uint8) (*AliasCheckState
 		return nil, errors.New(fmt.Sprintf("Right must be greater than or equal to left (got %d, %d).", left, right))
 	}
 	toReturn := &AliasCheckState{
-		baseAddress:	addr,
-		leftPosition:	left,
-		rightPosition:	right,
-		found:			false,
-		testAddr:		nil,
+		baseAddress:   addr,
+		leftPosition:  left,
+		rightPosition: right,
+		found:         false,
+		testAddr:      nil,
 	}
 	return toReturn, nil
 }
 
 // Get the left-most checking index
-func (state *AliasCheckState) GetLeft() (uint8) {
+func (state *AliasCheckState) GetLeft() uint8 {
 	return state.leftPosition
 }
 
 // Get the right-mount checking index
-func (state *AliasCheckState) GetRight() (uint8) {
+func (state *AliasCheckState) GetRight() uint8 {
 	return state.rightPosition
 }
 
 // Get whether or not the aliased network length has been found
-func (state *AliasCheckState) GetFound() (bool) {
+func (state *AliasCheckState) GetFound() bool {
 	return state.found
 }
 
 // Get the IPv6 address being used to test against for this alias check
-func (state *AliasCheckState) GetTestAddr() (*net.IP) {
+func (state *AliasCheckState) GetTestAddr() *net.IP {
 	return state.testAddr
 }
 
 // Get the base IPv6 address that is being permuted against for this alias check
-func (state *AliasCheckState) GetBaseAddress() (*net.IP) {
+func (state *AliasCheckState) GetBaseAddress() *net.IP {
 	return state.baseAddress
 }
 
 // Get the left index (inclusive) for the next test range
-func (state *AliasCheckState) GetLeftTestIndex() (uint8) {
+func (state *AliasCheckState) GetLeftTestIndex() uint8 {
 	testDistance := state.GetTestDistance()
 	if testDistance <= 1 {
 		return state.rightPosition
-	} else if testDistance % 2 == 0 {
+	} else if testDistance%2 == 0 {
 		return state.leftPosition + (testDistance / 2)
 	} else {
 		return state.leftPosition + (testDistance / 2) + 1
@@ -73,7 +73,7 @@ func (state *AliasCheckState) GetLeftTestIndex() (uint8) {
 }
 
 // Get the right index (inclusive) for the next test range
-func (state *AliasCheckState) GetRightTestIndex() (uint8) {
+func (state *AliasCheckState) GetRightTestIndex() uint8 {
 	testDistance := state.GetTestDistance()
 	if testDistance <= 1 {
 		return state.rightPosition
@@ -83,12 +83,12 @@ func (state *AliasCheckState) GetRightTestIndex() (uint8) {
 }
 
 // Get the distance between the left and right positions
-func (state *AliasCheckState) GetTestDistance() (uint8) {
+func (state *AliasCheckState) GetTestDistance() uint8 {
 	return state.rightPosition - state.leftPosition
 }
 
 // Get the number of bits that will be tested against in the next round of alias checking
-func (state *AliasCheckState) GetTestBitCount() (uint8) {
+func (state *AliasCheckState) GetTestBitCount() uint8 {
 	leftIndex := state.GetLeftTestIndex()
 	rightIndex := state.GetRightTestIndex()
 	return rightIndex - leftIndex + 1
@@ -106,11 +106,11 @@ func (state *AliasCheckState) GetPossibleTestAddressCount() (uint64, bool) {
 	}
 }
 
-func (state *AliasCheckState) GenerateTestAddress() () {
+func (state *AliasCheckState) GenerateTestAddress() {
 	state.testAddr = addressing.FlipBitsInAddress(state.baseAddress, state.GetLeftTestIndex(), state.GetRightTestIndex())
 }
 
-func (state *AliasCheckState) Update(foundAddrs map[string]*internal.Empty) () {
+func (state *AliasCheckState) Update(foundAddrs map[string]*internal.Empty) {
 	// TODO for set membership checks, i'm guessing strings are expensive. how about 128bit int?
 	// TODO by only checking for a single address, we risk marking ranges as aliased when they aren't. small amount of error, but could be a lot of effort to fix.
 	// TODO as we iterate checking different values we're going to duplicate work (as /96s that are unique at first are both part of the same /64, etc)
@@ -144,7 +144,7 @@ func (state *AliasCheckState) GetAliasedNetwork() (*net.IPNet, error) {
 }
 
 type AliasCheckStates struct {
-	checks				[]*AliasCheckState
+	checks []*AliasCheckState
 }
 
 func NewAliasCheckStates(addrs []*net.IP, left uint8, right uint8) (*AliasCheckStates, error) {
@@ -157,16 +157,16 @@ func NewAliasCheckStates(addrs []*net.IP, left uint8, right uint8) (*AliasCheckS
 		checkStates = append(checkStates, newState)
 	}
 	toReturn := &AliasCheckStates{
-		checks:		checkStates,
+		checks: checkStates,
 	}
 	return toReturn, nil
 }
 
-func (states *AliasCheckStates) GetChecksCount() (int) {
+func (states *AliasCheckStates) GetChecksCount() int {
 	return len(states.checks)
 }
 
-func (states *AliasCheckStates) GetFoundCount() (int) {
+func (states *AliasCheckStates) GetFoundCount() int {
 	toReturn := 0
 	for _, check := range states.checks {
 		if check.GetFound() {
@@ -176,7 +176,7 @@ func (states *AliasCheckStates) GetFoundCount() (int) {
 	return toReturn
 }
 
-func (states *AliasCheckStates) GenerateTestAddresses() () {
+func (states *AliasCheckStates) GenerateTestAddresses() {
 	for _, check := range states.checks {
 		if !check.found {
 			check.GenerateTestAddress()
@@ -184,8 +184,8 @@ func (states *AliasCheckStates) GenerateTestAddresses() () {
 	}
 }
 
-//TODO unit test
-func (states *AliasCheckStates) GetTestAddresses() ([]*net.IP) {
+// TODO unit test
+func (states *AliasCheckStates) GetTestAddresses() []*net.IP {
 	states.GenerateTestAddresses()
 	var toReturn []*net.IP
 	for _, check := range states.checks {
@@ -196,7 +196,7 @@ func (states *AliasCheckStates) GetTestAddresses() ([]*net.IP) {
 	return toReturn
 }
 
-func (states *AliasCheckStates) GetAllFound() (bool) {
+func (states *AliasCheckStates) GetAllFound() bool {
 	return states.GetChecksCount() == states.GetFoundCount()
 }
 
@@ -215,7 +215,7 @@ func (states *AliasCheckStates) GetAliasedNetworks() ([]*net.IPNet, error) {
 	return toReturn, nil
 }
 
-func (states *AliasCheckStates) Update(foundAddrs map[string]*internal.Empty) () {
+func (states *AliasCheckStates) Update(foundAddrs map[string]*internal.Empty) {
 	for _, check := range states.checks {
 		if !check.found {
 			check.Update(foundAddrs)
@@ -234,7 +234,7 @@ func (states *AliasCheckStates) PrintAliasedNetworks() error {
 	return nil
 }
 
-func (states *AliasCheckStates) PrintStates() () {
+func (states *AliasCheckStates) PrintStates() {
 	logging.Info("")
 	logging.Infof("Alias check states (%d total, %d found):", states.GetChecksCount(), states.GetFoundCount())
 	logging.Info("")

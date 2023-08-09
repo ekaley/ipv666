@@ -1,7 +1,7 @@
 package modeling
 
 import (
-	"github.com/lavalamp-/ipv666/internal/addressing"
+	"github.com/ekaley/ipv666/internal/addressing"
 	"github.com/stretchr/testify/assert"
 	"net"
 	"os"
@@ -240,7 +240,7 @@ func TestAddressTree_AddIPCount(t *testing.T) {
 	newIP := net.ParseIP("2600:0:1:0001:0000:0000:0000:0001")
 	firstCount := addrTree.ChildrenCount
 	addrTree.AddIP(&newIP)
-	assert.Equal(t, addrTree.ChildrenCount, firstCount + 1)
+	assert.Equal(t, addrTree.ChildrenCount, firstCount+1)
 }
 
 func TestAddressTree_AddIPAdds(t *testing.T) {
@@ -252,7 +252,7 @@ func TestAddressTree_AddIPAdds(t *testing.T) {
 
 func TestAddressTree_AddIPsCount(t *testing.T) {
 	addrTree := getAddressTree()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0001:0000:0000:0000:0001",
 		"2600:0:1:0001:0000:0000:0000:0002",
 		"2600:0:1:0001:0000:0000:0000:0003",
@@ -260,12 +260,12 @@ func TestAddressTree_AddIPsCount(t *testing.T) {
 	})
 	firstCount := addrTree.ChildrenCount
 	addrTree.AddIPs(newIPs, 100)
-	assert.Equal(t, firstCount + uint32(len(newIPs)), addrTree.ChildrenCount)
+	assert.Equal(t, firstCount+uint32(len(newIPs)), addrTree.ChildrenCount)
 }
 
 func TestAddressTree_AddIPsAdds(t *testing.T) {
 	addrTree := getAddressTree()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0001:0000:0000:0000:0001",
 		"2600:0:1:0001:0000:0000:0000:0002",
 		"2600:0:1:0001:0000:0000:0000:0003",
@@ -279,7 +279,7 @@ func TestAddressTree_AddIPsAdds(t *testing.T) {
 
 func TestAddressTree_AddIPsAdded(t *testing.T) {
 	addrTree := getAddressTree()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0001:0000:0000:0000:0001",
 		"2600:0:1:0001:0000:0000:0000:0002",
 		"2600:0:1:0001:0000:0000:0000:0003",
@@ -291,7 +291,7 @@ func TestAddressTree_AddIPsAdded(t *testing.T) {
 
 func TestAddressTree_AddIPsSkipped(t *testing.T) {
 	addrTree := getAddressTree()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0001:0000:0000:0000:0001",
 		"2600:0:1:0001:0000:0000:0000:0002",
 		"2600:0:1:0001:0000:0000:0000:0003",
@@ -471,7 +471,7 @@ func TestAddressTree_ContainsIPTrue(t *testing.T) {
 
 func TestAddressTree_GetIPsInGenRangeEmpty(t *testing.T) {
 	addrTree := getEmptyAddressTree()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0000:0000:0000:0000:0001",
 		"2600:0:1:0000:0000:0000:0000:0002",
 		"2600:0:1:0000:0000:0000:0000:0003",
@@ -484,7 +484,7 @@ func TestAddressTree_GetIPsInGenRangeEmpty(t *testing.T) {
 
 func TestAddressTree_GetIPsInGenRangeNoWild(t *testing.T) {
 	addrTree := getAddressTree()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0000:0000:0000:0000:0001",
 	})
 	genRange := GetGenRangeFromIPs(newIPs)
@@ -494,7 +494,7 @@ func TestAddressTree_GetIPsInGenRangeNoWild(t *testing.T) {
 
 func TestAddressTree_GetIPsInGenRangeOneWild(t *testing.T) {
 	addrTree := getAddressTree()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0000:0000:0000:0000:0001",
 		"2600:0:1:0000:0000:0000:0000:0002",
 	})
@@ -505,7 +505,7 @@ func TestAddressTree_GetIPsInGenRangeOneWild(t *testing.T) {
 
 func TestAddressTree_GetIPsInGenRangeTwoWild(t *testing.T) {
 	addrTree := getAddressTree()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0000:0000:0000:0000:0001",
 		"2600:0:1:0000:0000:0000:0000:0002",
 		"2600:0:1:0000:0001:0000:0000:0000",
@@ -517,7 +517,7 @@ func TestAddressTree_GetIPsInGenRangeTwoWild(t *testing.T) {
 
 func TestAddressTree_CountIPsInGenRangeEmpty(t *testing.T) {
 	addrTree := getEmptyAddressTree()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0000:0000:0000:0000:0001",
 		"2600:0:1:0000:0000:0000:0000:0002",
 		"2600:0:1:0000:0000:0000:0000:0003",
@@ -530,7 +530,7 @@ func TestAddressTree_CountIPsInGenRangeEmpty(t *testing.T) {
 
 func TestAddressTree_CountIPsInGenRangeNoWild(t *testing.T) {
 	addrTree := getAddressTree()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0000:0000:0000:0000:0001",
 	})
 	genRange := GetGenRangeFromIPs(newIPs)
@@ -540,7 +540,7 @@ func TestAddressTree_CountIPsInGenRangeNoWild(t *testing.T) {
 
 func TestAddressTree_CountIPsInGenRangeOneWild(t *testing.T) {
 	addrTree := getAddressTree()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0000:0000:0000:0000:0001",
 		"2600:0:1:0000:0000:0000:0000:0002",
 	})
@@ -551,7 +551,7 @@ func TestAddressTree_CountIPsInGenRangeOneWild(t *testing.T) {
 
 func TestAddressTree_CountIPsInGenRangeTwoWild(t *testing.T) {
 	addrTree := getAddressTree()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0000:0000:0000:0000:0001",
 		"2600:0:1:0000:0000:0000:0000:0002",
 		"2600:0:1:0000:0001:0000:0000:0000",

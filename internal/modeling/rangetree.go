@@ -1,25 +1,25 @@
 package modeling
 
 import (
-	"github.com/lavalamp-/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/logging"
 	"github.com/spf13/viper"
 )
 
 type RangeTree struct {
-	ChildrenCount		uint64
-	Children			map[uint16]*RangeTreeNode
+	ChildrenCount uint64
+	Children      map[uint16]*RangeTreeNode
 }
 
 type RangeTreeNode struct {
-	ChildrenCount		uint64
-	Children			map[uint16]*RangeTreeNode
-	Depth				int
+	ChildrenCount uint64
+	Children      map[uint16]*RangeTreeNode
+	Depth         int
 }
 
 func NewRangeTree() *RangeTree {
 	return &RangeTree{
-		Children:		make(map[uint16]*RangeTreeNode),
-		ChildrenCount:	0,
+		Children:      make(map[uint16]*RangeTreeNode),
+		ChildrenCount: 0,
 	}
 }
 
@@ -32,9 +32,9 @@ func NewRangeTreeFromRanges(toAdd []*GenRange) *RangeTree {
 
 func newRangeTreeNode(depth int) *RangeTreeNode {
 	return &RangeTreeNode{
-		Children:		make(map[uint16]*RangeTreeNode),
-		ChildrenCount:	0,
-		Depth:			depth,
+		Children:      make(map[uint16]*RangeTreeNode),
+		ChildrenCount: 0,
+		Depth:         depth,
 	}
 }
 
@@ -54,7 +54,7 @@ func (rangeTree *RangeTree) AddRange(toAdd *GenRange) bool {
 func (rangeTree *RangeTree) AddRanges(toAdd []*GenRange) (int, int) {
 	added, skipped := 0, 0
 	for i, curAdd := range toAdd {
-		if i % viper.GetInt("LogLoopEmitFreq") == 0 {
+		if i%viper.GetInt("LogLoopEmitFreq") == 0 {
 			logging.Infof("Adding range %d out of %d to RangeTree.", i, len(toAdd))
 		}
 		if rangeTree.AddRange(curAdd) {

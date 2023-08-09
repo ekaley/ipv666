@@ -1,14 +1,13 @@
 package statemachine
 
 import (
-	"github.com/lavalamp-/ipv666/internal/config"
-	"github.com/lavalamp-/ipv666/internal/fs"
-	"github.com/lavalamp-/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/config"
+	"github.com/ekaley/ipv666/internal/fs"
+	"github.com/ekaley/ipv666/internal/logging"
 	"github.com/rcrowley/go-metrics"
 	"os"
 	"path/filepath"
 )
-
 
 var cleanUpFileCounter = metrics.NewCounter()
 

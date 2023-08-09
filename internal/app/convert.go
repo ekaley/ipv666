@@ -1,10 +1,10 @@
 package app
 
 import (
-	"github.com/lavalamp-/ipv666/internal/addressing"
-	"github.com/lavalamp-/ipv666/internal/fs"
-	"github.com/lavalamp-/ipv666/internal/logging"
-	"github.com/lavalamp-/ipv666/internal/modeling"
+	"github.com/ekaley/ipv666/internal/addressing"
+	"github.com/ekaley/ipv666/internal/fs"
+	"github.com/ekaley/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/modeling"
 	"github.com/spf13/viper"
 )
 

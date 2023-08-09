@@ -5,9 +5,9 @@ import (
 	"bytes"
 	"compress/zlib"
 	"fmt"
+	"github.com/ekaley/ipv666/internal/comparison"
+	"github.com/ekaley/ipv666/internal/logging"
 	"github.com/google/uuid"
-	"github.com/lavalamp-/ipv666/internal/comparison"
-	"github.com/lavalamp-/ipv666/internal/logging"
 	"io"
 	"io/ioutil"
 	"os"
@@ -67,7 +67,7 @@ func GetMostRecentFileFromDirectory(dirPath string) (string, error) {
 func GetNonMostRecentFilesFromDirectory(dirPath string) ([]string, error) {
 	var toReturn []string
 	recentFile, err := GetMostRecentFileFromDirectory(dirPath)
-	if err != nil || recentFile == ""{
+	if err != nil || recentFile == "" {
 		return toReturn, err
 	}
 	logging.Debugf("Most recent file in directory '%s' is '%s'.", dirPath, recentFile)

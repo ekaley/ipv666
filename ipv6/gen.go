@@ -5,8 +5,8 @@ import (
 	"math/rand"
 	"net"
 
-	"github.com/lavalamp-/ipv666/internal/data"
-	"github.com/lavalamp-/ipv666/internal/modeling"
+	"github.com/ekaley/ipv666/internal/data"
+	"github.com/ekaley/ipv666/internal/modeling"
 )
 
 func IPv6AddrGen(fromNetwork string, genCount int) ([]*net.IP, error) {

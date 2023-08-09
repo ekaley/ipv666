@@ -2,11 +2,11 @@ package scan
 
 import (
 	"fmt"
-	"github.com/lavalamp-/ipv666/internal/app"
-	"github.com/lavalamp-/ipv666/internal/config"
-	"github.com/lavalamp-/ipv666/internal/logging"
-	"github.com/lavalamp-/ipv666/internal/shell"
-	"github.com/lavalamp-/ipv666/internal/validation"
+	"github.com/ekaley/ipv666/internal/app"
+	"github.com/ekaley/ipv666/internal/config"
+	"github.com/ekaley/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/shell"
+	"github.com/ekaley/ipv666/internal/validation"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
@@ -31,9 +31,9 @@ addresses to an output list.
 `)
 
 var discoverCmd = &cobra.Command{
-	Use:			"discover",
-	Short:			"Discover live hosts over IPv6",
-	Long:			discoverLongDesc,
+	Use:   "discover",
+	Short: "Discover live hosts over IPv6",
+	Long:  discoverLongDesc,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 
 		err := validation.ValidateOutputFileType(viper.GetString("OutputFileType"))

@@ -1,21 +1,21 @@
 package modeling
 
 import (
-	"github.com/lavalamp-/ipv666/internal/addressing"
-	"github.com/lavalamp-/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/addressing"
+	"github.com/ekaley/ipv666/internal/logging"
 	"github.com/spf13/viper"
 	"net"
 )
 
 type BinaryAddressContainer struct {
-	addresses			map[uint64][]uint64
-	sortedHighKeys		[]uint64
+	addresses      map[uint64][]uint64
+	sortedHighKeys []uint64
 }
 
 func ContainerFromAddrs(toProcess []*net.IP) *BinaryAddressContainer {
 	toReturn := &BinaryAddressContainer{
-		addresses:			make(map[uint64][]uint64),
-		sortedHighKeys:		[]uint64{},
+		addresses:      make(map[uint64][]uint64),
+		sortedHighKeys: []uint64{},
 	}
 	toReturn.AddIPs(toProcess, viper.GetInt("LogLoopEmitFreq"))
 	return toReturn
@@ -23,8 +23,8 @@ func ContainerFromAddrs(toProcess []*net.IP) *BinaryAddressContainer {
 
 func EmptyContainer() *BinaryAddressContainer {
 	return &BinaryAddressContainer{
-		addresses:			make(map[uint64][]uint64),
-		sortedHighKeys:		[]uint64{},
+		addresses:      make(map[uint64][]uint64),
+		sortedHighKeys: []uint64{},
 	}
 }
 
@@ -48,7 +48,7 @@ func (container *BinaryAddressContainer) AddIP(toAdd *net.IP) bool {
 func (container *BinaryAddressContainer) AddIPs(toAdd []*net.IP, emitFreq int) (int, int) { //TODO get rid of emit freq
 	added, skipped := 0, 0
 	for i, curAdd := range toAdd {
-		if i % emitFreq == 0 {
+		if i%emitFreq == 0 {
 			logging.Infof("Adding address %d out of %d to BinaryAddressContainer.", i, len(toAdd))
 		}
 		wasAdded := container.AddIP(curAdd)
@@ -67,7 +67,7 @@ func (container *BinaryAddressContainer) GetAllIPs() []*net.IP {
 	for k, v := range container.addresses {
 		for _, curLower := range v {
 			processed++
-			if processed % viper.GetInt("LogLoopEmitFreq") == 0 {
+			if processed%viper.GetInt("LogLoopEmitFreq") == 0 {
 				logging.Infof("Dumping address %d from BinaryAddressContainer.", processed)
 			}
 			toReturn = append(toReturn, addressing.UintsToAddress(k, curLower))
@@ -94,7 +94,7 @@ func (container *BinaryAddressContainer) GetIPsInRange(fromRange *net.IPNet) ([]
 		return container.GetAllIPs(), nil
 	} else if ones == 128 {
 		if container.ContainsIP(&fromRange.IP) {
-			return []*net.IP{ &fromRange.IP }, nil
+			return []*net.IP{&fromRange.IP}, nil
 		} else {
 			return []*net.IP{}, nil
 		}
@@ -143,7 +143,7 @@ func (container *BinaryAddressContainer) GetIPsInGenRange(fromRange *GenRange) [
 	if len(fromRange.WildIndices) == 0 {
 		checkIP := fromRange.GetIP()
 		if container.ContainsIP(checkIP) {
-			return []*net.IP{ checkIP }
+			return []*net.IP{checkIP}
 		}
 	}
 	var toReturn []*net.IP
@@ -188,12 +188,12 @@ func filterByMask(toFilter []uint64, mask uint64, expected uint64) []uint64 {
 
 func insert(into []uint64, toInsert uint64) ([]uint64, bool) {
 	if len(into) == 0 {
-		return []uint64{ toInsert }, true
+		return []uint64{toInsert}, true
 	} else if len(into) == 1 {
 		if into[0] < toInsert {
-			return []uint64{ into[0], toInsert }, true
+			return []uint64{into[0], toInsert}, true
 		} else {
-			return []uint64{ toInsert, into[0] }, true
+			return []uint64{toInsert, into[0]}, true
 		}
 	} else {
 		index, found := seek(into, toInsert)
@@ -211,12 +211,12 @@ func insert(into []uint64, toInsert uint64) ([]uint64, bool) {
 func seekRange(source []uint64, lowerBound uint64, upperBound uint64) []uint64 {
 	if len(source) == 0 {
 		return []uint64{}
-	} else if lowerBound > source[len(source) - 1] || upperBound < source[0] {
+	} else if lowerBound > source[len(source)-1] || upperBound < source[0] {
 		return []uint64{}
 	} else if lowerBound == upperBound {
 		_, found := seek(source, lowerBound)
 		if found {
-			return []uint64{ lowerBound }
+			return []uint64{lowerBound}
 		} else {
 			return []uint64{}
 		}
@@ -228,7 +228,7 @@ func seekRange(source []uint64, lowerBound uint64, upperBound uint64) []uint64 {
 	if upperFound {
 		upperIndex++
 	}
-	if upperIndex - lowerIndex == 1 {
+	if upperIndex-lowerIndex == 1 {
 		return []uint64{}
 	} else {
 		return source[lowerIndex:upperIndex]
@@ -246,7 +246,7 @@ func seek(source []uint64, sought uint64) (int, bool) {
 	curLower := 0
 	curUpper := len(source)
 	for {
-		middle := curLower + (curUpper - curLower) / 2
+		middle := curLower + (curUpper-curLower)/2
 		if source[middle] == sought {
 			return middle, true
 		} else if source[middle] < sought {
@@ -254,7 +254,7 @@ func seek(source []uint64, sought uint64) (int, bool) {
 		} else {
 			curUpper = middle
 		}
-		if curUpper - curLower == 1 {
+		if curUpper-curLower == 1 {
 			return curUpper, false
 		}
 	}

@@ -2,36 +2,36 @@ package modeling
 
 import (
 	"fmt"
-	"github.com/lavalamp-/ipv666/internal"
-	"github.com/lavalamp-/ipv666/internal/addressing"
-	"github.com/lavalamp-/ipv666/internal/logging"
-	"github.com/lavalamp-/ipv666/internal/persist"
+	"github.com/ekaley/ipv666/internal"
+	"github.com/ekaley/ipv666/internal/addressing"
+	"github.com/ekaley/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/persist"
 	"net"
 )
 
 type AddressTree struct {
-	ChildrenCount		uint32						`msgpack:"c"`
-	Children			map[uint8]*AddressTreeNode	`msgpack:"h"`
+	ChildrenCount uint32                     `msgpack:"c"`
+	Children      map[uint8]*AddressTreeNode `msgpack:"h"`
 }
 
 type AddressTreeNode struct {
-	ChildrenCount		uint32						`msgpack:"c"`
-	Children			map[uint8]*AddressTreeNode	`msgpack:"h"`
-	Depth				int							`msgpack:"d"`
+	ChildrenCount uint32                     `msgpack:"c"`
+	Children      map[uint8]*AddressTreeNode `msgpack:"h"`
+	Depth         int                        `msgpack:"d"`
 }
 
 func newAddressTree() *AddressTree {
 	return &AddressTree{
-		ChildrenCount:	0,
-		Children:		make(map[uint8]*AddressTreeNode),
+		ChildrenCount: 0,
+		Children:      make(map[uint8]*AddressTreeNode),
 	}
 }
 
 func newAddressTreeNode(depth int) *AddressTreeNode {
 	return &AddressTreeNode{
-		ChildrenCount:	0,
-		Children:		make(map[uint8]*AddressTreeNode),
-		Depth:			depth,
+		ChildrenCount: 0,
+		Children:      make(map[uint8]*AddressTreeNode),
+		Depth:         depth,
 	}
 }
 
@@ -61,7 +61,7 @@ func (addrTree *AddressTree) AddIP(toAdd *net.IP) bool {
 func (addrTree *AddressTree) AddIPs(toAdd []*net.IP, emitFreq int) (int, int) {
 	added, skipped := 0, 0
 	for i, curAdd := range toAdd {
-		if i % emitFreq == 0 && i != 0 {
+		if i%emitFreq == 0 && i != 0 {
 			logging.Infof("Adding IP address %d out of %d to address tree.", i, len(toAdd))
 		}
 		if addrTree.AddIP(curAdd) {
@@ -95,10 +95,10 @@ func (addrTree *AddressTree) seekChildByNybbles(nybbles []uint8) (*AddressTreeNo
 
 func (addrTree *AddressTree) getSeekNybbles(fromRange *net.IPNet) ([]uint8, error) {
 	ones, _ := fromRange.Mask.Size()
-	if ones % 4 != 0 {
+	if ones%4 != 0 {
 		return nil, fmt.Errorf("cannot get IPs from a network range that isn't on a nybble boundary (ie: modulo 4, mask size was %d)", ones)
 	} else {
-		return addressing.GetNybblesFromIP(&fromRange.IP, ones / 4), nil
+		return addressing.GetNybblesFromIP(&fromRange.IP, ones/4), nil
 	}
 }
 
@@ -122,13 +122,13 @@ func (addrTree *AddressTree) GetIPsInGenRange(fromRange *GenRange) []*net.IP {
 	if _, ok := fromRange.WildIndices[0]; ok {
 		var toReturn []*net.IP
 		for k, v := range addrTree.Children {
-			toReturn = append(toReturn, v.getIPsInGenRange([]uint8{ k }, fromRange.AddrNybbles[1:], fromRange.WildIndices)...)
+			toReturn = append(toReturn, v.getIPsInGenRange([]uint8{k}, fromRange.AddrNybbles[1:], fromRange.WildIndices)...)
 		}
 		return toReturn
 	} else if val, ok := addrTree.Children[fromRange.AddrNybbles[0]]; !ok {
 		return []*net.IP{}
 	} else {
-		return val.getIPsInGenRange([]uint8 { fromRange.AddrNybbles[0] }, fromRange.AddrNybbles[1:], fromRange.WildIndices)
+		return val.getIPsInGenRange([]uint8{fromRange.AddrNybbles[0]}, fromRange.AddrNybbles[1:], fromRange.WildIndices)
 	}
 }
 
@@ -217,7 +217,7 @@ func (addrTreeNode *AddressTreeNode) getAllIPs(parentNybbles []uint8) []*net.IP 
 		return []*net.IP{}
 	} else if len(addrTreeNode.Children) == 0 {
 		toAdd := addressing.NybblesToIP(parentNybbles)
-		return []*net.IP{ toAdd }
+		return []*net.IP{toAdd}
 	} else {
 		var toReturn []*net.IP
 		for k, v := range addrTreeNode.Children {
@@ -253,7 +253,7 @@ func (addrTreeNode *AddressTreeNode) getIPsInGenRange(parentNybbles []uint8, ran
 		return []*net.IP{}
 	} else if len(addrTreeNode.Children) == 0 {
 		toAdd := addressing.NybblesToIP(parentNybbles)
-		return []*net.IP{ toAdd }
+		return []*net.IP{toAdd}
 	} else if _, ok := wildIndices[addrTreeNode.Depth]; ok {
 		var toReturn []*net.IP
 		for k, v := range addrTreeNode.Children {

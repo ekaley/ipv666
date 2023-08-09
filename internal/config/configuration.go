@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	"github.com/lavalamp-/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/logging"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 	"net"
@@ -16,21 +16,21 @@ func InitConfig() {
 
 	// Filesystem
 
-	viper.BindEnv("BaseOutputDirectory")				// Base directory where transient files are kept
-	viper.BindEnv("GeneratedModelDirectory")			// Subdirectory where statistical models are kept
-	viper.BindEnv("CandidateAddressDirectory")		// Subdirectory where generated candidate addressing are kept
-	viper.BindEnv("PingResultDirectory")				// Subdirectory where results of ping scans are kept
-	viper.BindEnv("NetworkGroupDirectory")			// Subdirectory where results of grouping live hosts are kept
-	viper.BindEnv("NetworkScanTargetsDirectory")		// Subdirectory where the addresses to scan for blacklist checks are kept
-	viper.BindEnv("NetworkScanResultsDirectory")		// Subdirectory where the results of scanning blacklist candidate networks are kept
-	viper.BindEnv("NetworkBlacklistDirectory")		// Subdirectory where network range blacklists are kept
-	viper.BindEnv("CleanPingResultDirectory")		// Subdirectory where cleaned ping results are kept
-	viper.BindEnv("AliasedNetworkDirectory")			// Subdirectory where aliased network results are kept
-	viper.BindEnv("BloomFilterDirectory")			// Subdirectory where the Bloom filter is kept
-	viper.BindEnv("StateFileName")					// The file name for the file that contains the current state
-	viper.BindEnv("TargetNetworkFileName")			// The file name for the file that contains the last network that was targeted
-	viper.BindEnv("CloudSyncOptInPath")				// Cloud sync opt-in status file path
-	viper.BindEnv("CloudSyncOptIn")					// Cloud sync opt-in status
+	viper.BindEnv("BaseOutputDirectory")         // Base directory where transient files are kept
+	viper.BindEnv("GeneratedModelDirectory")     // Subdirectory where statistical models are kept
+	viper.BindEnv("CandidateAddressDirectory")   // Subdirectory where generated candidate addressing are kept
+	viper.BindEnv("PingResultDirectory")         // Subdirectory where results of ping scans are kept
+	viper.BindEnv("NetworkGroupDirectory")       // Subdirectory where results of grouping live hosts are kept
+	viper.BindEnv("NetworkScanTargetsDirectory") // Subdirectory where the addresses to scan for blacklist checks are kept
+	viper.BindEnv("NetworkScanResultsDirectory") // Subdirectory where the results of scanning blacklist candidate networks are kept
+	viper.BindEnv("NetworkBlacklistDirectory")   // Subdirectory where network range blacklists are kept
+	viper.BindEnv("CleanPingResultDirectory")    // Subdirectory where cleaned ping results are kept
+	viper.BindEnv("AliasedNetworkDirectory")     // Subdirectory where aliased network results are kept
+	viper.BindEnv("BloomFilterDirectory")        // Subdirectory where the Bloom filter is kept
+	viper.BindEnv("StateFileName")               // The file name for the file that contains the current state
+	viper.BindEnv("TargetNetworkFileName")       // The file name for the file that contains the last network that was targeted
+	viper.BindEnv("CloudSyncOptInPath")          // Cloud sync opt-in status file path
+	viper.BindEnv("CloudSyncOptIn")              // Cloud sync opt-in status
 
 	home, err := homedir.Dir()
 	if err != nil {
@@ -55,16 +55,16 @@ func InitConfig() {
 
 	// Candidate address generation
 
-	viper.BindEnv("GenerateAddressCount")			// How many addressing to generate in a given iteration
+	viper.BindEnv("GenerateAddressCount") // How many addressing to generate in a given iteration
 
 	viper.SetDefault("GenerateAddressCount", 1000000)
 
 	// Modeling
 
-	viper.BindEnv("ModelGenerationJitter")			// The default jitter (ie: % likelihood of a random wildcard) to use when generating new addresses
-	viper.BindEnv("ModelCheckCount")					// The number of upgrades to wait between checking for cluster model improvement
-	viper.BindEnv("ModelMinNybblePercent")			// The minimum percent probability of a nybble occurring in a cluster model
-	viper.BindEnv("ModelDistributionSize")			// The size of startdust distributions used for random nybble generation
+	viper.BindEnv("ModelGenerationJitter") // The default jitter (ie: % likelihood of a random wildcard) to use when generating new addresses
+	viper.BindEnv("ModelCheckCount")       // The number of upgrades to wait between checking for cluster model improvement
+	viper.BindEnv("ModelMinNybblePercent") // The minimum percent probability of a nybble occurring in a cluster model
+	viper.BindEnv("ModelDistributionSize") // The size of startdust distributions used for random nybble generation
 
 	viper.SetDefault("ModelGenerationJitter", 0.1) //TODO figure out why configuration stuff isn't working with cobra's bindpflags
 	viper.SetDefault("ModelCheckCount", 10000)
@@ -73,9 +73,9 @@ func InitConfig() {
 
 	// Existing address bloom filter
 
-	viper.BindEnv("AddressFilterSize")				// The size of the Bloom filter to use for identifying already guessed addresses
-	viper.BindEnv("AddressFilterHashCount")			// The number of hashing functions to use for the address Bloom filter
-	viper.BindEnv("BloomEmptyMultiple")				// The multiple of the address generation size upon which the Bloom filter should be emptied and remade
+	viper.BindEnv("AddressFilterSize")      // The size of the Bloom filter to use for identifying already guessed addresses
+	viper.BindEnv("AddressFilterHashCount") // The number of hashing functions to use for the address Bloom filter
+	viper.BindEnv("BloomEmptyMultiple")     // The multiple of the address generation size upon which the Bloom filter should be emptied and remade
 
 	viper.SetDefault("AddressFilterSize", 250000000)
 	viper.SetDefault("AddressFilterHashCount", 3)
@@ -83,9 +83,9 @@ func InitConfig() {
 
 	// Network grouping and validation
 
-	viper.BindEnv("NetworkGroupingSize")				// The bit-length of network size to use when checking for many-to-one
-	viper.BindEnv("NetworkPingCount")				// The number of addressing to try pinging when testing for many-to-one
-	viper.BindEnv("NetworkBlacklistPercent")			// The percentage of ping results that, if returned positive, indicate a blacklisted network
+	viper.BindEnv("NetworkGroupingSize")     // The bit-length of network size to use when checking for many-to-one
+	viper.BindEnv("NetworkPingCount")        // The number of addressing to try pinging when testing for many-to-one
+	viper.BindEnv("NetworkBlacklistPercent") // The percentage of ping results that, if returned positive, indicate a blacklisted network
 
 	viper.SetDefault("NetworkGroupingSize", 96)
 	viper.SetDefault("NetworkPingCount", 6)
@@ -93,15 +93,15 @@ func InitConfig() {
 
 	// Blacklist candidate generation
 
-	viper.BindEnv("BlacklistFlushInterval")			// The frequency with which to write newly-generate blacklist candidate addresses to disk
+	viper.BindEnv("BlacklistFlushInterval") // The frequency with which to write newly-generate blacklist candidate addresses to disk
 
 	viper.SetDefault("BlacklistFlushInterval", 500000)
 
 	// Fan-out ping-scanning
-	viper.BindEnv("FanOutNetworkBlockSize")        // Number of contiguous neighboring /64 networks to attempt
-	viper.BindEnv("FanOutHostBlockSize")           // Number of contiguous hosts to attempt, monotonically increasing from each /64
-	viper.BindEnv("FanOutMaxNetworks")             // Maximum networks to attempt during fan-out scanning
-	viper.BindEnv("FanOutMaxHosts")                // Maximum hosts to attempt during fan-out scanning
+	viper.BindEnv("FanOutNetworkBlockSize") // Number of contiguous neighboring /64 networks to attempt
+	viper.BindEnv("FanOutHostBlockSize")    // Number of contiguous hosts to attempt, monotonically increasing from each /64
+	viper.BindEnv("FanOutMaxNetworks")      // Maximum networks to attempt during fan-out scanning
+	viper.BindEnv("FanOutMaxHosts")         // Maximum hosts to attempt during fan-out scanning
 	viper.SetDefault("FanOutNetworkBlockSize", 1000)
 	viper.SetDefault("FanOutHostBlockSize", 500)
 	viper.SetDefault("FanOutMaxNetworks", 2000000)
@@ -109,14 +109,14 @@ func InitConfig() {
 
 	// Logging
 
-	viper.BindEnv("LogLevel")						// The level to log at (debug, info, success, warn, error)
-	viper.BindEnv("LogToFile")						// Whether or not to write log results to a file instead of stdout
-	viper.BindEnv("LogFilePath")						// The local file path to where log files should be written
-	viper.BindEnv("LogFileMBSize")					// The max size of each log file in MB
-	viper.BindEnv("LogFileMaxBackups")				// The maximum number of backups to have in rotating log files
-	viper.BindEnv("LogFileMaxAge")					// The maximum number of days to store log files
-	viper.BindEnv("CompressLogFiles")				// Whether or not to compress log files
-	viper.BindEnv("LogLoopEmitFreq")					// The general frequency with which logs should be emitted in long loops
+	viper.BindEnv("LogLevel")          // The level to log at (debug, info, success, warn, error)
+	viper.BindEnv("LogToFile")         // Whether or not to write log results to a file instead of stdout
+	viper.BindEnv("LogFilePath")       // The local file path to where log files should be written
+	viper.BindEnv("LogFileMBSize")     // The max size of each log file in MB
+	viper.BindEnv("LogFileMaxBackups") // The maximum number of backups to have in rotating log files
+	viper.BindEnv("LogFileMaxAge")     // The maximum number of days to store log files
+	viper.BindEnv("CompressLogFiles")  // Whether or not to compress log files
+	viper.BindEnv("LogLoopEmitFreq")   // The general frequency with which logs should be emitted in long loops
 
 	viper.SetDefault("LogLevel", "info")
 	viper.SetDefault("LogToFile", false)
@@ -129,27 +129,27 @@ func InitConfig() {
 
 	// Scanning
 
-	viper.BindEnv("PingScanBandwidth")				// The maximum bandwidth to use for ping scanning
-	viper.BindEnv("ScanTargetNetwork")				// The default network to scan
+	viper.BindEnv("PingScanBandwidth") // The maximum bandwidth to use for ping scanning
+	viper.BindEnv("ScanTargetNetwork") // The default network to scan
 
 	viper.SetDefault("PingScanBandwidth", "20M")
 	viper.SetDefault("ScanTargetNetwork", "2000::/4")
 
 	// Clean Up
 
-	viper.BindEnv("CleanUpEnabled")					// Whether or not to delete non-recent files after a run
+	viper.BindEnv("CleanUpEnabled") // Whether or not to delete non-recent files after a run
 
 	viper.SetDefault("CleanUpEnabled", true)
 
 	// Metrics
 
-	viper.BindEnv("ExitOnFailedMetrics")				// Whether or not to exit the program when a metrics operation fails
-	viper.BindEnv("MetricsToStdout")					// Whether or not to print metrics to Stdout
-	viper.BindEnv("MetricsStdoutFreq")				// The frequency in seconds of how often to print metrics to Stdout
-	viper.BindEnv("GraphiteExportEnabled")			// Whether or not to export data to Graphite
-	viper.BindEnv("GraphiteHost")					// The host address for Graphite
-	viper.BindEnv("GraphitePort")					// The Graphite port
-	viper.BindEnv("GraphiteEmitFreq")				// How often to emit metrics to Graphite in seconds
+	viper.BindEnv("ExitOnFailedMetrics")   // Whether or not to exit the program when a metrics operation fails
+	viper.BindEnv("MetricsToStdout")       // Whether or not to print metrics to Stdout
+	viper.BindEnv("MetricsStdoutFreq")     // The frequency in seconds of how often to print metrics to Stdout
+	viper.BindEnv("GraphiteExportEnabled") // Whether or not to export data to Graphite
+	viper.BindEnv("GraphiteHost")          // The host address for Graphite
+	viper.BindEnv("GraphitePort")          // The Graphite port
+	viper.BindEnv("GraphiteEmitFreq")      // How often to emit metrics to Graphite in seconds
 
 	viper.SetDefault("ExitOnFailedMetrics", false)
 	viper.SetDefault("MetricsToStdout", false)
@@ -161,45 +161,45 @@ func InitConfig() {
 
 	// Output
 
-	viper.BindEnv("OutputFileName")					// The file name for the file to write addresses to
-	viper.BindEnv("OutputFileType")					// The output file type
+	viper.BindEnv("OutputFileName") // The file name for the file to write addresses to
+	viper.BindEnv("OutputFileType") // The output file type
 
-	viper.SetDefault("OutputFileName", "discovered_addrs")  //TODO remove default output file name and type
+	viper.SetDefault("OutputFileName", "discovered_addrs") //TODO remove default output file name and type
 	viper.SetDefault("OutputFileType", "txt")
 
 	// Input
 
-	viper.BindEnv("InputMinTargetCount")				// The minimum bit count for network sizes to scan
+	viper.BindEnv("InputMinTargetCount") // The minimum bit count for network sizes to scan
 
 	viper.SetDefault("InputMinTargetCount", 30)
 
 	// Runtime
 
-	viper.BindEnv("ForceAcceptPrompts")				// Whether or not to bypass prompts by force accepting them
+	viper.BindEnv("ForceAcceptPrompts") // Whether or not to bypass prompts by force accepting them
 
 	viper.SetDefault("ForceAcceptPrompts", false)
 
 	// Alias Detection
 
-	viper.BindEnv("AliasLeftIndexStart")				// The left-most index for CIDR mask lengths where aliased network detection should start
-	viper.BindEnv("AliasDuplicateScanCount")			// The number of times a single address should be scanned when checking for aliased networks
+	viper.BindEnv("AliasLeftIndexStart")     // The left-most index for CIDR mask lengths where aliased network detection should start
+	viper.BindEnv("AliasDuplicateScanCount") // The number of times a single address should be scanned when checking for aliased networks
 
 	viper.SetDefault("AliasLeftIndexStart", 0)
 	viper.SetDefault("AliasDuplicateScanCount", 3)
 
 	// Syncing
 
-	viper.BindEnv("SyncTimeout")						// Amount of time in seconds to wait for timeouts when syncing data
-	viper.BindEnv("SyncUrl")							// The URL to retrieve S3 put links from
-	viper.BindEnv("SyncUserAgent")					// The user agent to send when syncing data
-	viper.BindEnv("SyncFailureThreshold")			// The maximum number of upload failures to allow before backing off
-	viper.BindEnv("SyncBackoffSeconds")				// The amount of time, in seconds, to back off after too many sync failures
+	viper.BindEnv("SyncTimeout")          // Amount of time in seconds to wait for timeouts when syncing data
+	viper.BindEnv("SyncUrl")              // The URL to retrieve S3 put links from
+	viper.BindEnv("SyncUserAgent")        // The user agent to send when syncing data
+	viper.BindEnv("SyncFailureThreshold") // The maximum number of upload failures to allow before backing off
+	viper.BindEnv("SyncBackoffSeconds")   // The amount of time, in seconds, to back off after too many sync failures
 
 	viper.SetDefault("SyncTimeout", 30)
 	viper.SetDefault("SyncUrl", "https://ipv6.exposed/api/v1/get-upload-url")
 	viper.SetDefault("SyncUserAgent", "IPv666 Client v0.4")
 	viper.SetDefault("SyncFailureThreshold", 3)
-	viper.SetDefault("SyncBackoffSeconds", 60 * 30)
+	viper.SetDefault("SyncBackoffSeconds", 60*30)
 
 	viper.AutomaticEnv()
 }

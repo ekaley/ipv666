@@ -5,7 +5,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/alecthomas/units"
-	"github.com/lavalamp-/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/logging"
 	"github.com/spf13/viper"
 	"golang.org/x/net/icmp"
 	"golang.org/x/net/ipv6"

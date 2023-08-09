@@ -1,7 +1,7 @@
 package addressing
 
 import (
-	"github.com/lavalamp-/ipv666/internal/config"
+	"github.com/ekaley/ipv666/internal/config"
 	"github.com/stretchr/testify/assert"
 	"net"
 	"testing"
@@ -105,7 +105,7 @@ func TestGetAdjacentNetworkAddressesFromIPSmallCount(t *testing.T) {
 
 func TestGetAdjacentNetworkAddressesFromIPLargeCount(t *testing.T) {
 	results, _ := GetAdjacentNetworkAddressesFromIP(getTestingIP(), 0, 32)
-	assert.EqualValues(t, 16 * 32 - 32 + 1, len(results))
+	assert.EqualValues(t, 16*32-32+1, len(results))
 }
 
 func TestGetAdjacentNetworkAddressesFromIPSmallContent(t *testing.T) {

@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"github.com/lavalamp-/ipv666/internal/app"
-	"github.com/lavalamp-/ipv666/internal/blacklist"
-	"github.com/lavalamp-/ipv666/internal/data"
-	"github.com/lavalamp-/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/app"
+	"github.com/ekaley/ipv666/internal/blacklist"
+	"github.com/ekaley/ipv666/internal/data"
+	"github.com/ekaley/ipv666/internal/logging"
 	"github.com/spf13/cobra"
 	"os"
 	"strings"
@@ -29,9 +29,9 @@ The cleaned results will then be written to an output file.
 `)
 
 var cleanCmd = &cobra.Command{
-	Use:			"clean",
-	Short:			"Clean a list of IPv6 addresses",
-	Long:			cleanLongDesc,
+	Use:   "clean",
+	Short: "Clean a list of IPv6 addresses",
+	Long:  cleanLongDesc,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 
 		inputPath, err := cmd.PersistentFlags().GetString("input")

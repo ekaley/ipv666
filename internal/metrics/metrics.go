@@ -3,8 +3,8 @@ package metrics
 import (
 	"fmt"
 	"github.com/cyberdelia/go-metrics-graphite"
-	"github.com/lavalamp-/ipv666/internal/config"
-	"github.com/lavalamp-/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/config"
+	"github.com/ekaley/ipv666/internal/logging"
 	"github.com/rcrowley/go-metrics"
 	"github.com/spf13/viper"
 	"log"
@@ -16,7 +16,7 @@ import (
 func InitMetrics() error {
 	if viper.GetBool("MetricsToStdout") {
 		logging.Debugf("Setting up metrics to print to stdout every %d seconds.", viper.GetInt64("MetricsStdoutFreq"))
-		go metrics.Log(metrics.DefaultRegistry, time.Duration(viper.GetInt64("MetricsStdoutFreq")) * time.Second, log.New(os.Stdout, "metrics: ", log.Lmicroseconds))
+		go metrics.Log(metrics.DefaultRegistry, time.Duration(viper.GetInt64("MetricsStdoutFreq"))*time.Second, log.New(os.Stdout, "metrics: ", log.Lmicroseconds))
 	} else {
 		logging.Debugf("Not printing metrics to stdout.")
 	}

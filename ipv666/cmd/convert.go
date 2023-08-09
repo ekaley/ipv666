@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"github.com/lavalamp-/ipv666/internal/app"
-	"github.com/lavalamp-/ipv666/internal/logging"
-	"github.com/lavalamp-/ipv666/internal/validation"
+	"github.com/ekaley/ipv666/internal/app"
+	"github.com/ekaley/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/validation"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"strings"
@@ -28,9 +28,9 @@ addresses are stored in the file without having to specify an input type.
 `)
 
 var convertCmd = &cobra.Command{
-	Use:			"convert",
-	Short:			"Convert a file of IPv6 addresses to another format",
-	Long:			convertLongDesc,
+	Use:   "convert",
+	Short: "Convert a file of IPv6 addresses to another format",
+	Long:  convertLongDesc,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 
 		inputPath, err := cmd.PersistentFlags().GetString("input")

@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/lavalamp-/ipv666/internal/config"
-	"github.com/lavalamp-/ipv666/internal/logging"
-	"github.com/lavalamp-/ipv666/internal/metrics"
-	"github.com/lavalamp-/ipv666/internal/setup"
-	"github.com/lavalamp-/ipv666/internal/splash"
-	"github.com/lavalamp-/ipv666/ipv666/cmd"
+	"github.com/ekaley/ipv666/internal/config"
+	"github.com/ekaley/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/metrics"
+	"github.com/ekaley/ipv666/internal/setup"
+	"github.com/ekaley/ipv666/internal/splash"
+	"github.com/ekaley/ipv666/ipv666/cmd"
 	"math/rand"
 	"time"
 )

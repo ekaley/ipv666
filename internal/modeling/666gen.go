@@ -2,10 +2,10 @@ package modeling
 
 import (
 	"fmt"
-	"github.com/lavalamp-/ipv666/internal"
-	"github.com/lavalamp-/ipv666/internal/addressing"
-	"github.com/lavalamp-/ipv666/internal/logging"
-	"github.com/lavalamp-/ipv666/internal/persist"
+	"github.com/ekaley/ipv666/internal"
+	"github.com/ekaley/ipv666/internal/addressing"
+	"github.com/ekaley/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/persist"
 	"github.com/spf13/viper"
 	"math"
 	"math/rand"
@@ -15,28 +15,28 @@ import (
 )
 
 type ClusterModel struct {
-	ClusterSet			*ClusterSet					`msgpack:"c"`
-	NybbleCounts		[]map[uint8]int				`msgpack:"n"`
-	normalizedCounts	[][]uint8
+	ClusterSet       *ClusterSet     `msgpack:"c"`
+	NybbleCounts     []map[uint8]int `msgpack:"n"`
+	normalizedCounts [][]uint8
 }
 
 type ClusterSet struct {
-	Clusters			[]*GenCluster				`msgpack:"c"`
-	Captured			int							`msgpack:"a"`
-	RangeSize			int							`msgpack:"s"`
-	Density				float64						`msgpack:"d"`
+	Clusters  []*GenCluster `msgpack:"c"`
+	Captured  int           `msgpack:"a"`
+	RangeSize int           `msgpack:"s"`
+	Density   float64       `msgpack:"d"`
 }
 
 type GenCluster struct {
-	Range				*GenRange					`msgpack:"r"`
-	Captured			int							`msgpack:"c"`
-	Density				float64						`msgpack:"d"`
-	Size				int							`msgpack:"s"`
+	Range    *GenRange `msgpack:"r"`
+	Captured int       `msgpack:"c"`
+	Density  float64   `msgpack:"d"`
+	Size     int       `msgpack:"s"`
 }
 
 type GenRange struct {
-	AddrNybbles			[]uint8						`msgpack:"n"`
-	WildIndices			map[int]internal.Empty		`msgpack:"w"`
+	AddrNybbles []uint8                `msgpack:"n"`
+	WildIndices map[int]internal.Empty `msgpack:"w"`
 }
 
 type GenRangeMask struct {
@@ -61,7 +61,7 @@ func (clusterModel *ClusterModel) GenerateAddresses(generateCount int, jitter fl
 	var toReturn []*net.IP
 	iteration := 0
 	for {
-		if iteration % viper.GetInt("LogLoopEmitFreq") == 0 {
+		if iteration%viper.GetInt("LogLoopEmitFreq") == 0 {
 			logging.Infof("Generating new candidate address %d using clustering model. Unique count size is %d.", iteration, addrTree.Size())
 		}
 		newAddr := clusterModel.GenerateAddress(jitter)
@@ -79,7 +79,7 @@ func (clusterModel *ClusterModel) GenerateAddresses(generateCount int, jitter fl
 
 func (clusterModel *ClusterModel) GenerateAddressesFromNetwork(generateCount int, jitter float64, network *net.IPNet) ([]*net.IP, error) {
 	ones, _ := network.Mask.Size()
-	if ones % 4 != 0 {
+	if ones%4 != 0 {
 		return nil, fmt.Errorf("generating addresses in a network requires a network length that is divisible by 4 (got length of %d)", ones)
 	}
 	networkNybbles := addressing.GetNybblesFromNetwork(network)
@@ -87,7 +87,7 @@ func (clusterModel *ClusterModel) GenerateAddressesFromNetwork(generateCount int
 	iteration := 0
 	addrTree := newAddressTree()
 	for {
-		if iteration % viper.GetInt("LogLoopEmitFreq") == 0 {
+		if iteration%viper.GetInt("LogLoopEmitFreq") == 0 {
 			logging.Infof("Generating new candidate address %d using clustering model. Unique count size is %d.", iteration, addrTree.Size())
 		}
 		newAddr := clusterModel.generateAddressFromNybbles(jitter, networkNybbles)
@@ -105,7 +105,7 @@ func (clusterModel *ClusterModel) GenerateAddressesFromNetwork(generateCount int
 
 func (clusterModel *ClusterModel) GenerateAddressesFromNetworkWithCallback(generateCount int, jitter float64, network *net.IPNet, fn addrProcessFunc) ([]*net.IP, error) {
 	ones, _ := network.Mask.Size()
-	if ones % 4 != 0 {
+	if ones%4 != 0 {
 		return nil, fmt.Errorf("generating addresses in a network requires a network length that is divisible by 4 (got length of %d)", ones)
 	}
 	networkNybbles := addressing.GetNybblesFromNetwork(network)
@@ -134,7 +134,7 @@ func (clusterModel *ClusterModel) GenerateAddress(jitter float64) *net.IP {
 	for i := range cluster.Range.AddrNybbles {
 		if _, ok := cluster.Range.WildIndices[i]; ok {
 			nybbles = append(nybbles, uint8(rand.Int31n(16)))
-		} else if float64(rand.Int31n(10000)) / 100.0 <= jitter * 100 {
+		} else if float64(rand.Int31n(10000))/100.0 <= jitter*100 {
 			index := rand.Int63n(int64(len(clusterModel.normalizedCounts[i])))
 			nybbles = append(nybbles, clusterModel.normalizedCounts[i][index])
 		} else {
@@ -154,7 +154,7 @@ func (clusterModel *ClusterModel) generateAddressFromNybbles(jitter float64, fro
 	for i := len(fromNybbles); i < 32; i++ {
 		if _, ok := cluster.Range.WildIndices[i]; ok {
 			nybbles = append(nybbles, uint8(rand.Int31n(16)))
-		} else if float64(rand.Int31n(10000)) / 100.0 <= jitter * 100 {
+		} else if float64(rand.Int31n(10000))/100.0 <= jitter*100 {
 			index := rand.Int63n(int64(len(clusterModel.normalizedCounts[i])))
 			nybbles = append(nybbles, clusterModel.normalizedCounts[i][index])
 		} else {
@@ -197,7 +197,7 @@ func getCountsWithMinDist(counts map[uint8]int, minPercent float64) []uint8 {
 	calculateCount := 0
 	for i = 0; i < 16; i++ {
 		if val, ok := counts[i]; ok {
-			if float64(val) / existingCount < minPercent {
+			if float64(val)/existingCount < minPercent {
 				populateIndices[i] = &internal.Empty{}
 			} else {
 				calculateCount += val
@@ -229,7 +229,7 @@ func normalizeCountsToMinPercent(counts map[uint8]int, minPercent float64) []uin
 		totalFound += v
 	}
 	var addPercents = make(map[uint8]float64)
-	if minFound / float64(totalFound) < minPercent {
+	if minFound/float64(totalFound) < minPercent {
 		middle := float64(totalFound) / 16.0
 		toGrow := (minPercent * float64(totalFound)) - minFound
 		middleDistance := middle - minFound
@@ -249,7 +249,7 @@ func normalizeCountsToMinPercent(counts map[uint8]int, minPercent float64) []uin
 func percentsToNybbleCounts(fromPercents map[uint8]float64, distSize int) []uint8 {
 	var toReturn []uint8
 	for k, v := range fromPercents {
-		for i := 0; i < int(math.Ceil(v * float64(distSize))); i++ {
+		for i := 0; i < int(math.Ceil(v*float64(distSize))); i++ {
 			toReturn = append(toReturn, k)
 		}
 	}
@@ -276,20 +276,20 @@ func CreateClusteringModel(fromAddrs []*net.IP) *ClusterModel {
 	empty := &internal.Empty{}
 
 	for i, cluster := range clusters {
-		if i % viper.GetInt("LogLoopEmitFreq") == 0 {
+		if i%viper.GetInt("LogLoopEmitFreq") == 0 {
 			logging.Infof("Processing cluster %d out of %d for poor performers.", i, len(clusters))
 		}
 		upgradeDensity, upgradeCount, upgradeIndices := cluster.getBestUpgradeOptions(corpus)
-		if len(upgradeIndices) == 32 {  // If all upgrades are equivalent then all upgrades are bad
+		if len(upgradeIndices) == 32 { // If all upgrades are equivalent then all upgrades are bad
 			dustAddrs = append(dustAddrs, cluster.Range.GetIP())
 		} else {
 			for _, curIndex := range upgradeIndices {
-				newRange := cluster.Range.CopyWithIndices([]int{ curIndex })
+				newRange := cluster.Range.CopyWithIndices([]int{curIndex})
 				newCluster := GenCluster{
-					Range: 		newRange,
-					Captured:	upgradeCount,
-					Density:	upgradeDensity,
-					Size:		int(newRange.Size()), // TODO undo silly typecasting
+					Range:    newRange,
+					Captured: upgradeCount,
+					Density:  upgradeDensity,
+					Size:     int(newRange.Size()), // TODO undo silly typecasting
 				}
 				sig := newCluster.signature()
 				if _, ok := clusterMap[sig]; ok {
@@ -313,20 +313,20 @@ func CreateClusteringModel(fromAddrs []*net.IP) *ClusterModel {
 	var upgradeCandidates clusterList
 
 	for i, cluster := range modelCandidates {
-		if i % viper.GetInt("LogLoopEmitFreq") == 0 {
+		if i%viper.GetInt("LogLoopEmitFreq") == 0 {
 			logging.Infof("Processing model candidate %d out of %d for upgrade candidates.", i, len(modelCandidates))
 		}
 		upgradeDensity, upgradeCount, upgradeIndices := cluster.getBestUpgradeOptions(corpus)
-		if len(upgradeIndices) == 31 {  // Thee case where all upgrades are the same is not an upgrade
+		if len(upgradeIndices) == 31 { // Thee case where all upgrades are the same is not an upgrade
 			skipped++
 		} else {
 			for _, curIndex := range upgradeIndices {
-				newRange := cluster.Range.CopyWithIndices([]int{ curIndex })
+				newRange := cluster.Range.CopyWithIndices([]int{curIndex})
 				newCluster := GenCluster{
-					Range: 		newRange,
-					Captured:	upgradeCount,
-					Density:	upgradeDensity,
-					Size:		int(newRange.Size()), // TODO undo silly typecasting
+					Range:    newRange,
+					Captured: upgradeCount,
+					Density:  upgradeDensity,
+					Size:     int(newRange.Size()), // TODO undo silly typecasting
 				}
 				sig := newCluster.signature()
 				if _, ok := upgradeMap[sig]; !ok {
@@ -368,14 +368,14 @@ func CreateClusteringModel(fromAddrs []*net.IP) *ClusterModel {
 		// Calculate its upgrade candidates and insert them into the upgrade candidate list
 
 		upgradeDensity, upgradeCount, upgradeIndices := candidate.getBestUpgradeOptions(corpus)
-		if len(upgradeIndices) + len(candidate.Range.WildIndices) != 32 {  // So long as upgrade is not worst case scenario, we add them to upgrade candidates
+		if len(upgradeIndices)+len(candidate.Range.WildIndices) != 32 { // So long as upgrade is not worst case scenario, we add them to upgrade candidates
 			for _, curIndex := range upgradeIndices {
-				newRange := candidate.Range.CopyWithIndices([]int{ curIndex })
+				newRange := candidate.Range.CopyWithIndices([]int{curIndex})
 				newCluster := &GenCluster{
-					Range: 		newRange,
-					Captured:	upgradeCount,
-					Density:	upgradeDensity,
-					Size:		int(newRange.Size()), // TODO undo silly typecasting
+					Range:    newRange,
+					Captured: upgradeCount,
+					Density:  upgradeDensity,
+					Size:     int(newRange.Size()), // TODO undo silly typecasting
 				}
 				sig := newCluster.signature()
 				if _, ok := upgradeMap[sig]; !ok {
@@ -392,7 +392,7 @@ func CreateClusteringModel(fromAddrs []*net.IP) *ClusterModel {
 		// Add to the iteration counter and check to see if checkpoint should be evaluated
 
 		iteration++
-		if iteration % viper.GetInt("ModelCheckCount") == 0 {
+		if iteration%viper.GetInt("ModelCheckCount") == 0 {
 
 			logging.Infof("Evaluating %d model candidates for cluster model.", len(modelCandidates))
 
@@ -409,9 +409,9 @@ func CreateClusteringModel(fromAddrs []*net.IP) *ClusterModel {
 
 			// Calculate cluster set score
 
-			sizeDiff := float64(toCheck.RangeSize - lastClusterSet.RangeSize) / float64(lastClusterSet.RangeSize)
+			sizeDiff := float64(toCheck.RangeSize-lastClusterSet.RangeSize) / float64(lastClusterSet.RangeSize)
 			densityDiff := (toCheck.Density - lastClusterSet.Density) / lastClusterSet.Density
-			clusterCountDiff := (float64(len(toCheck.Clusters) - len(lastClusterSet.Clusters)) / float64(len(lastClusterSet.Clusters))) * -1.0
+			clusterCountDiff := (float64(len(toCheck.Clusters)-len(lastClusterSet.Clusters)) / float64(len(lastClusterSet.Clusters))) * -1.0
 			score := (3 * densityDiff) + (2 * sizeDiff) + (1 * clusterCountDiff)
 			logging.Infof("New cluster set has %f density, %d size, %d captured, and %d cluster count.", toCheck.Density, toCheck.RangeSize, toCheck.Captured, len(toCheck.Clusters))
 			logging.Infof("Diffs with new model are: %f size, %f density, and %f cluster count. Resulting score is %f.", sizeDiff, densityDiff, clusterCountDiff, score)
@@ -427,7 +427,7 @@ func CreateClusteringModel(fromAddrs []*net.IP) *ClusterModel {
 	}
 
 	return &ClusterModel{
-		ClusterSet:	lastClusterSet,
+		ClusterSet:   lastClusterSet,
 		NybbleCounts: addrsToNybbleCounts(dustAddrs),
 	}
 }
@@ -470,7 +470,7 @@ func (clusterSet *ClusterSet) GenerateAddresses(generateCount int, jitter float6
 	toReturn := newAddressTree()
 	iteration := 0
 	for {
-		if iteration % viper.GetInt("LogLoopEmitFreq") == 0 {
+		if iteration%viper.GetInt("LogLoopEmitFreq") == 0 {
 			logging.Infof("Generating new candidate address %d using clustering model. Unique count size is %d.", iteration, toReturn.Size())
 		}
 		cluster := clusterSet.Clusters[rand.Int63n(int64(len(clusterSet.Clusters)))]
@@ -511,10 +511,10 @@ func (clusterSet *ClusterSet) ResetCounts(corpus AddressContainer) {
 
 func newClusterSetFromClusters(clusters []*GenCluster) *ClusterSet {
 	toReturn := ClusterSet{
-		Clusters: 	[]*GenCluster{},
-		Captured:	0,
-		RangeSize:	0,
-		Density:	-1.0,
+		Clusters:  []*GenCluster{},
+		Captured:  0,
+		RangeSize: 0,
+		Density:   -1.0,
 	}
 	toReturn.AddClusters(clusters)
 	return &toReturn
@@ -547,7 +547,7 @@ func (clusterSet *ClusterSet) AddCluster(toAdd *GenCluster, withUpdate bool) {
 
 func (clusterSet *ClusterSet) AddClusters(toAdd []*GenCluster) {
 	for i, curAdd := range toAdd {
-		if i % viper.GetInt("LogLoopEmitFreq") == 0 {
+		if i%viper.GetInt("LogLoopEmitFreq") == 0 {
 			logging.Infof("Processing cluster %d out of %d.", i, len(toAdd))
 		}
 		clusterSet.AddCluster(curAdd, false)
@@ -569,10 +569,10 @@ func newGenClusters(addrs []*net.IP) []*GenCluster {
 
 func newGenCluster(firstIP *net.IP) *GenCluster {
 	return &GenCluster{
-		Range:			newGenRange(firstIP),
-		Captured:		1,
-		Density:		1.0,
-		Size:			1,
+		Range:    newGenRange(firstIP),
+		Captured: 1,
+		Density:  1.0,
+		Size:     1,
 	}
 }
 
@@ -592,12 +592,12 @@ func (list clusterList) removeRedundant() clusterList {
 
 func (list clusterList) insertByDensity(toInsert *GenCluster) clusterList {
 	if len(list) == 0 {
-		return []*GenCluster{ toInsert }
+		return []*GenCluster{toInsert}
 	} else if len(list) == 1 {
 		if list[0].Density > toInsert.Density {
-			return []*GenCluster{ list[0], toInsert }
+			return []*GenCluster{list[0], toInsert}
 		} else {
-			return []*GenCluster{ toInsert, list[0] }
+			return []*GenCluster{toInsert, list[0]}
 		}
 	} else {
 		index, _ := list.seekDensity(toInsert.Density)
@@ -615,15 +615,15 @@ func (list clusterList) seekDensity(density float64) (int, bool) {
 		return 0, false
 	} else if density == list[0].Density {
 		return 0, true
-	} else if density < list[len(list) - 1].Density {
+	} else if density < list[len(list)-1].Density {
 		return len(list), false
-	} else if density == list[len(list) - 1].Density {
-		return list.findFirstOfDensity(len(list) - 1, density), true
+	} else if density == list[len(list)-1].Density {
+		return list.findFirstOfDensity(len(list)-1, density), true
 	}
 	curLower := 0
 	curUpper := len(list)
 	for {
-		middle := curLower + (curUpper - curLower) / 2
+		middle := curLower + (curUpper-curLower)/2
 		if list[middle].Density == density {
 			return list.findFirstOfDensity(middle, density), true
 		} else if list[middle].Density > density {
@@ -631,7 +631,7 @@ func (list clusterList) seekDensity(density float64) (int, bool) {
 		} else {
 			curUpper = middle
 		}
-		if curUpper - curLower == 1 {
+		if curUpper-curLower == 1 {
 			return curUpper, false
 		}
 	}
@@ -651,7 +651,7 @@ func (cluster *GenCluster) generateAddr(jitter float64) *net.IP {
 	for i := range cluster.Range.AddrNybbles {
 		if _, ok := cluster.Range.WildIndices[i]; ok {
 			addrNybbles = append(addrNybbles, uint8(rand.Int31n(16)))
-		} else if float64(rand.Int31n(10000)) / 100.0 <= jitter * 100 {
+		} else if float64(rand.Int31n(10000))/100.0 <= jitter*100 {
 			addrNybbles = append(addrNybbles, uint8(rand.Int31n(16)))
 		} else {
 			addrNybbles = append(addrNybbles, cluster.Range.AddrNybbles[i])
@@ -692,13 +692,13 @@ func (cluster *GenCluster) getBestUpgradeOptions(corpus AddressContainer) (float
 	var count = -1
 	for i := 0; i < 32; i++ {
 		if _, ok := cluster.Range.WildIndices[i]; !ok {
-			newRange := cluster.Range.CopyWithIndices([]int{ i })
+			newRange := cluster.Range.CopyWithIndices([]int{i})
 			capturedCount := corpus.CountIPsInGenRange(newRange)
 			capturedDensity := float64(capturedCount) / newRange.Size()
 			if capturedDensity > density {
 				density = capturedDensity
 				count = capturedCount
-				toReturn = []int { i }
+				toReturn = []int{i}
 			} else if capturedDensity == density {
 				toReturn = append(toReturn, i)
 			}
@@ -754,7 +754,7 @@ func (genRange *GenRange) AddIP(toAdd *net.IP) {
 
 func (genRange *GenRange) Equals(otherRange *GenRange) bool {
 	for i := range genRange.AddrNybbles {
-		if _, ok :=  genRange.WildIndices[i]; !ok {
+		if _, ok := genRange.WildIndices[i]; !ok {
 			if genRange.AddrNybbles[i] != otherRange.AddrNybbles[i] {
 				return false
 			}

@@ -1,8 +1,8 @@
 package modeling
 
 import (
-	"github.com/lavalamp-/ipv666/internal/addressing"
-	"github.com/lavalamp-/ipv666/internal/config"
+	"github.com/ekaley/ipv666/internal/addressing"
+	"github.com/ekaley/ipv666/internal/config"
 	"github.com/stretchr/testify/assert"
 	"net"
 	"testing"
@@ -12,10 +12,10 @@ func init() {
 	config.InitConfig()
 }
 
-func bytesToUint(bytes []byte) uint64 {  //TODO move helper functions to common test lib
+func bytesToUint(bytes []byte) uint64 { //TODO move helper functions to common test lib
 	toReturn := uint64(0)
 	for i := 0; i < 8; i++ {
-		toReturn ^= uint64(bytes[i]) << uint((7 - i) * 8)
+		toReturn ^= uint64(bytes[i]) << uint((7-i)*8)
 	}
 	return toReturn
 }
@@ -104,7 +104,7 @@ func TestBinaryAddressContainer_AddIPCount(t *testing.T) {
 	newIP := net.ParseIP("2600:0:1:0001:0000:0000:0000:0001")
 	firstCount := container.Size()
 	container.AddIP(&newIP)
-	assert.Equal(t, firstCount + 1, container.Size())
+	assert.Equal(t, firstCount+1, container.Size())
 }
 
 func TestBinaryAddressContainer_AddIPAdds(t *testing.T) {
@@ -116,7 +116,7 @@ func TestBinaryAddressContainer_AddIPAdds(t *testing.T) {
 
 func TestBinaryAddressContainer_AddIPsCount(t *testing.T) {
 	container := getBinaryContainer()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0001:0000:0000:0000:0001",
 		"2600:0:1:0001:0000:0000:0000:0002",
 		"2600:0:1:0001:0000:0000:0000:0003",
@@ -124,12 +124,12 @@ func TestBinaryAddressContainer_AddIPsCount(t *testing.T) {
 	})
 	firstCount := container.Size()
 	container.AddIPs(newIPs, 100)
-	assert.Equal(t, firstCount + len(newIPs), container.Size())
+	assert.Equal(t, firstCount+len(newIPs), container.Size())
 }
 
 func TestBinaryAddressContainer_AddIPsAdds(t *testing.T) {
 	container := getBinaryContainer()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0001:0000:0000:0000:0001",
 		"2600:0:1:0001:0000:0000:0000:0002",
 		"2600:0:1:0001:0000:0000:0000:0003",
@@ -143,7 +143,7 @@ func TestBinaryAddressContainer_AddIPsAdds(t *testing.T) {
 
 func TestBinaryAddressContainer_AddIPsAdded(t *testing.T) {
 	container := getBinaryContainer()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0001:0000:0000:0000:0001",
 		"2600:0:1:0001:0000:0000:0000:0002",
 		"2600:0:1:0001:0000:0000:0000:0003",
@@ -155,7 +155,7 @@ func TestBinaryAddressContainer_AddIPsAdded(t *testing.T) {
 
 func TestBinaryAddressContainer_AddIPsSkipped(t *testing.T) {
 	container := getBinaryContainer()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0001:0000:0000:0000:0001",
 		"2600:0:1:0001:0000:0000:0000:0002",
 		"2600:0:1:0001:0000:0000:0000:0003",
@@ -312,8 +312,6 @@ func TestBinaryAddressContainer_ExtendedGetIPsInRange128(t *testing.T) {
 	assert.Equal(t, 1, len(addrs))
 }
 
-
-
 //func TestBinaryAddressContainer_SaveCreatesFile(t *testing.T) {
 //	container := getBinaryContainer()
 //	addrTree.Save("/tmp/tester")
@@ -374,7 +372,7 @@ func TestBinaryAddressContainer_ContainsIPTrue(t *testing.T) {
 
 func TestBinaryAddressContainer_GetIPsInGenRangeEmpty(t *testing.T) {
 	container := getEmptyBinaryContainer()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0000:0000:0000:0000:0001",
 		"2600:0:1:0000:0000:0000:0000:0002",
 		"2600:0:1:0000:0000:0000:0000:0003",
@@ -387,7 +385,7 @@ func TestBinaryAddressContainer_GetIPsInGenRangeEmpty(t *testing.T) {
 
 func TestBinaryAddressContainer_GetIPsInGenRangeNoWild(t *testing.T) {
 	container := getBinaryContainer()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0000:0000:0000:0000:0001",
 	})
 	genRange := GetGenRangeFromIPs(newIPs)
@@ -397,7 +395,7 @@ func TestBinaryAddressContainer_GetIPsInGenRangeNoWild(t *testing.T) {
 
 func TestBinaryAddressContainer_GetIPsInGenRangeOneWild(t *testing.T) {
 	container := getBinaryContainer()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0000:0000:0000:0000:0001",
 		"2600:0:1:0000:0000:0000:0000:0002",
 	})
@@ -408,7 +406,7 @@ func TestBinaryAddressContainer_GetIPsInGenRangeOneWild(t *testing.T) {
 
 func TestBinaryAddressContainer_GetIPsInGenRangeTwoWild(t *testing.T) {
 	container := getBinaryContainer()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0000:0000:0000:0000:0001",
 		"2600:0:1:0000:0000:0000:0000:0002",
 		"2600:0:1:0000:0001:0000:0000:0000",
@@ -420,7 +418,7 @@ func TestBinaryAddressContainer_GetIPsInGenRangeTwoWild(t *testing.T) {
 
 func TestBinaryAddressContainer_CountIPsInGenRangeEmpty(t *testing.T) {
 	container := getEmptyBinaryContainer()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0000:0000:0000:0000:0001",
 		"2600:0:1:0000:0000:0000:0000:0002",
 		"2600:0:1:0000:0000:0000:0000:0003",
@@ -433,7 +431,7 @@ func TestBinaryAddressContainer_CountIPsInGenRangeEmpty(t *testing.T) {
 
 func TestBinaryAddressContainer_CountIPsInGenRangeNoWild(t *testing.T) {
 	container := getBinaryContainer()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0000:0000:0000:0000:0001",
 	})
 	genRange := GetGenRangeFromIPs(newIPs)
@@ -443,7 +441,7 @@ func TestBinaryAddressContainer_CountIPsInGenRangeNoWild(t *testing.T) {
 
 func TestBinaryAddressContainer_CountIPsInGenRangeOneWild(t *testing.T) {
 	container := getBinaryContainer()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0000:0000:0000:0000:0001",
 		"2600:0:1:0000:0000:0000:0000:0002",
 	})
@@ -454,7 +452,7 @@ func TestBinaryAddressContainer_CountIPsInGenRangeOneWild(t *testing.T) {
 
 func TestBinaryAddressContainer_CountIPsInGenRangeTwoWild(t *testing.T) {
 	container := getBinaryContainer()
-	newIPs := addressing.GetIPsFromStrings([]string {
+	newIPs := addressing.GetIPsFromStrings([]string{
 		"2600:0:1:0000:0000:0000:0000:0001",
 		"2600:0:1:0000:0000:0000:0000:0002",
 		"2600:0:1:0000:0001:0000:0000:0000",
@@ -471,10 +469,10 @@ func TestFilterByMaskEmpty(t *testing.T) {
 
 func TestFilterByMaskNoHits(t *testing.T) {
 	candidates := byteListToUints([][]byte{
-		{ 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff },
-		{ 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00 },
-		{ 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff },
-		{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 },
+		{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
+		{0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00},
+		{0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff},
+		{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
 	})
 	mask := bytesToUint([]byte{
 		0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00,
@@ -488,10 +486,10 @@ func TestFilterByMaskNoHits(t *testing.T) {
 
 func TestFilterByMaskFullHits(t *testing.T) {
 	candidates := byteListToUints([][]byte{
-		{ 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff },
-		{ 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00 },
-		{ 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff },
-		{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 },
+		{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
+		{0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00},
+		{0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff},
+		{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
 	})
 	mask := bytesToUint([]byte{
 		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -505,10 +503,10 @@ func TestFilterByMaskFullHits(t *testing.T) {
 
 func TestFilterByMaskHalfHits(t *testing.T) {
 	candidates := byteListToUints([][]byte{
-		{ 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff },
-		{ 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00 },
-		{ 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff },
-		{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 },
+		{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
+		{0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00},
+		{0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff},
+		{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
 	})
 	mask := bytesToUint([]byte{
 		0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00,
@@ -527,7 +525,7 @@ func TestFilterByMaskHalfHits(t *testing.T) {
 func TestInsertEmptyResult(t *testing.T) {
 	var addrs []uint64
 	result, _ := insert(addrs, 1)
-	assert.ElementsMatch(t, []uint64{ 1 }, result)
+	assert.ElementsMatch(t, []uint64{1}, result)
 }
 
 func TestInsertEmptyAdded(t *testing.T) {
@@ -539,7 +537,7 @@ func TestInsertEmptyAdded(t *testing.T) {
 func TestInsert1Below(t *testing.T) {
 	addrs := getSeekRangeTestUints()
 	result, _ := insert(addrs, 1)
-	assert.ElementsMatch(t, append([]uint64{ 1 }, addrs...), result)
+	assert.ElementsMatch(t, append([]uint64{1}, addrs...), result)
 }
 
 func TestInsert1Above(t *testing.T) {
@@ -563,7 +561,7 @@ func TestInsertTopHit(t *testing.T) {
 func TestInsertMiddleMiss(t *testing.T) {
 	addrs := getSeekRangeTestUints()
 	result, _ := insert(addrs, 32)
-	expected := []uint64{9, 10, 11, 19, 20, 21, 29, 30, 31, 32, 39, 40, 41, 49, 50 }
+	expected := []uint64{9, 10, 11, 19, 20, 21, 29, 30, 31, 32, 39, 40, 41, 49, 50}
 	assert.ElementsMatch(t, expected, result)
 }
 
@@ -588,7 +586,7 @@ func TestSeekRangeUpperBelow(t *testing.T) {
 func TestSeekRangeEquivalentHit(t *testing.T) {
 	uints := getSeekRangeTestUints()
 	results := seekRange(uints, 9, 9)
-	assert.ElementsMatch(t, []uint64{ 9 }, results)
+	assert.ElementsMatch(t, []uint64{9}, results)
 }
 
 func TestSeekRangeEquivalentMiss(t *testing.T) {
@@ -600,61 +598,61 @@ func TestSeekRangeEquivalentMiss(t *testing.T) {
 func TestSeekRangeCaptureLowHit(t *testing.T) {
 	uints := getSeekRangeTestUints()
 	results := seekRange(uints, 9, 15)
-	assert.ElementsMatch(t, []uint64{ 9, 10, 11 }, results)
+	assert.ElementsMatch(t, []uint64{9, 10, 11}, results)
 }
 
 func TestSeekRangeCaptureLowMiss(t *testing.T) {
 	uints := getSeekRangeTestUints()
 	results := seekRange(uints, 8, 15)
-	assert.ElementsMatch(t, []uint64{ 9, 10, 11 }, results)
+	assert.ElementsMatch(t, []uint64{9, 10, 11}, results)
 }
 
 func TestSeekRangeCaptureHighHit(t *testing.T) {
 	uints := getSeekRangeTestUints()
 	results := seekRange(uints, 9, 19)
-	assert.ElementsMatch(t, []uint64{ 9, 10, 11, 19 }, results)
+	assert.ElementsMatch(t, []uint64{9, 10, 11, 19}, results)
 }
 
 func TestSeekRangeCaptureHighMiss(t *testing.T) {
 	uints := getSeekRangeTestUints()
 	results := seekRange(uints, 9, 22)
-	assert.ElementsMatch(t, []uint64{ 9, 10, 11, 19, 20, 21 }, results)
+	assert.ElementsMatch(t, []uint64{9, 10, 11, 19, 20, 21}, results)
 }
 
 func TestSeekRangeCaptureBothMiss(t *testing.T) {
 	uints := getSeekRangeTestUints()
 	results := seekRange(uints, 8, 22)
-	assert.ElementsMatch(t, []uint64{ 9, 10, 11, 19, 20, 21 }, results)
+	assert.ElementsMatch(t, []uint64{9, 10, 11, 19, 20, 21}, results)
 }
 
 func TestSeekRangeCaptureBothHit(t *testing.T) {
 	uints := getSeekRangeTestUints()
 	results := seekRange(uints, 9, 21)
-	assert.ElementsMatch(t, []uint64{ 9, 10, 11, 19, 20, 21 }, results)
+	assert.ElementsMatch(t, []uint64{9, 10, 11, 19, 20, 21}, results)
 }
 
 func TestSeekRangeCaptureLowMissHighHit(t *testing.T) {
 	uints := getSeekRangeTestUints()
 	results := seekRange(uints, 8, 21)
-	assert.ElementsMatch(t, []uint64{ 9, 10, 11, 19, 20, 21 }, results)
+	assert.ElementsMatch(t, []uint64{9, 10, 11, 19, 20, 21}, results)
 }
 
 func TestSeekRangeCaptureLowHitHighMiss(t *testing.T) {
 	uints := getSeekRangeTestUints()
 	results := seekRange(uints, 9, 22)
-	assert.ElementsMatch(t, []uint64{ 9, 10, 11, 19, 20, 21 }, results)
+	assert.ElementsMatch(t, []uint64{9, 10, 11, 19, 20, 21}, results)
 }
 
 func TestSeekRangeCaptureMid(t *testing.T) {
 	uints := getSeekRangeTestUints()
 	results := seekRange(uints, 29, 39)
-	assert.ElementsMatch(t, []uint64{ 29, 30, 31, 39}, results)
+	assert.ElementsMatch(t, []uint64{29, 30, 31, 39}, results)
 }
 
 func TestSeekRangeCaptureHigh(t *testing.T) {
 	uints := getSeekRangeTestUints()
 	results := seekRange(uints, 40, 51)
-	assert.ElementsMatch(t, []uint64{ 40, 41, 49, 50 }, results)
+	assert.ElementsMatch(t, []uint64{40, 41, 49, 50}, results)
 }
 
 func TestSeekRangeCaptureFull(t *testing.T) {
@@ -664,7 +662,7 @@ func TestSeekRangeCaptureFull(t *testing.T) {
 }
 
 func TestSeekRangeDoubleMissOneLength(t *testing.T) {
-	uints := []uint64{ 5 }
+	uints := []uint64{5}
 	results := seekRange(uints, 0, 10)
 	assert.ElementsMatch(t, uints, results)
 }

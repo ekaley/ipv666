@@ -1,7 +1,7 @@
 package scan
 
 import (
-	"github.com/lavalamp-/ipv666/internal/app"
+	"github.com/ekaley/ipv666/internal/app"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"strings"
@@ -16,9 +16,9 @@ range that is aliased.
 `)
 
 var aliasCmd = &cobra.Command{
-	Use:				"alias",
-	Short:				"Test a network range for aliased characteristics",
-	Long:				aliasLongDesc,
+	Use:   "alias",
+	Short: "Test a network range for aliased characteristics",
+	Long:  aliasLongDesc,
 	Run: func(cmd *cobra.Command, args []string) {
 		app.RunAlias(viper.GetString("ScanTargetNetwork"))
 	},

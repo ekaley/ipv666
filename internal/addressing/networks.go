@@ -5,8 +5,8 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"github.com/lavalamp-/ipv666/internal/logging"
-	"github.com/lavalamp-/ipv666/internal/zrandom"
+	"github.com/ekaley/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/zrandom"
 	"io"
 	"io/ioutil"
 	"math"
@@ -24,7 +24,7 @@ func GenerateRandomNetworks(toGenerate int, minMaskLen int32) []*net.IPNet {
 	var toReturn []*net.IPNet
 	for len(toReturn) < toGenerate {
 		addrBytes := zrandom.GenerateRandomBits(128)
-		maskLen := uint8(rand.Int31n(128 - minMaskLen) + minMaskLen)
+		maskLen := uint8(rand.Int31n(128-minMaskLen) + minMaskLen)
 		newNet, _ := GetIPv6NetworkFromBytes(addrBytes, maskLen)
 		toReturn = append(toReturn, newNet)
 	}
@@ -51,7 +51,7 @@ func GetBaseAddressString(network *net.IPNet) string {
 	maskBytes := ([]byte)(network.Mask)
 	var normalized []byte
 	for i := range ipBytes {
-		normalized = append(normalized, ipBytes[i] & maskBytes[i])
+		normalized = append(normalized, ipBytes[i]&maskBytes[i])
 	}
 	ip := (net.IP)(normalized)
 	ones, _ := network.Mask.Size()
@@ -76,7 +76,7 @@ func GenerateRandomAddressInNetwork(network *net.IPNet) *net.IP {
 	randomBytes := zrandom.GenerateHostBits(128 - ones)
 	var newBytes []byte
 	for i := range network.IP {
-		newBytes = append(newBytes, (network.IP[i] & network.Mask[i]) | randomBytes[i])
+		newBytes = append(newBytes, (network.IP[i]&network.Mask[i])|randomBytes[i])
 	}
 	var genIP = net.IP(newBytes)
 	return &genIP
@@ -86,7 +86,7 @@ func GetUniqueNetworks(networks []*net.IPNet, updateFreq int) []*net.IPNet {
 	checkMap := make(map[string]bool)
 	var toReturn []*net.IPNet
 	for i, curNet := range networks {
-		if i % updateFreq == 0 {
+		if i%updateFreq == 0 {
 			logging.Debugf("Processing %d out of %d for unique networks.", i, len(networks))
 		}
 		netString := GetBaseAddressString(curNet)
@@ -161,8 +161,8 @@ func GetIPv6NetworkFromBytes(toProcess []byte, maskLength uint8) (*net.IPNet, er
 		ipBytes[i] &= byteMask[i]
 	}
 	toReturn := &net.IPNet{
-		IP:			ipBytes,
-		Mask:		byteMask,
+		IP:   ipBytes,
+		Mask: byteMask,
 	}
 	return toReturn, nil
 }
@@ -178,12 +178,12 @@ func GetIPv6NetworkFromBytesIncLength(toProcess []byte) (*net.IPNet, error) {
 }
 
 func BytesToIPv6Networks(toParse []byte) ([]*net.IPNet, error) {
-	if len(toParse) % 17 != 0 {
+	if len(toParse)%17 != 0 {
 		return nil, fmt.Errorf("expected bytes to parse to be a multiple of 17 (got %d length)", len(toParse))
 	}
 	var toReturn []*net.IPNet
 	for i := 0; i < len(toParse); i += 17 {
-		newNetwork, err := GetIPv6NetworkFromBytesIncLength(toParse[i:i+17])
+		newNetwork, err := GetIPv6NetworkFromBytesIncLength(toParse[i : i+17])
 		if err != nil {
 			return nil, err
 		}
@@ -203,7 +203,7 @@ func ReadIPv6NetworksFromFile(filePath string) ([]*net.IPNet, error) {
 		return nil, err
 	}
 	fileSize := fileInfo.Size()
-	if fileSize % 17 != 0 {
+	if fileSize%17 != 0 {
 		return nil, errors.New(fmt.Sprintf("Expected file size to be a multiple of 17 (got %d).", fileSize))
 	}
 	buffer := make([]byte, 17)
@@ -237,7 +237,7 @@ func GetByteMask(maskLength uint8) []byte {
 		toReturn = append(toReturn, GetByteWithBitsMasked(bitOff))
 	}
 	for len(toReturn) < 16 {
-		toReturn = append(toReturn,0x00)
+		toReturn = append(toReturn, 0x00)
 	}
 	return toReturn
 }
@@ -258,14 +258,14 @@ func NetworkToUints(toProcess *net.IPNet) (uint64, uint64, uint64, uint64) {
 	} else if ones < 64 {
 		upperSecond = ^uint64(0)
 		upperFirst = uint64(0)
-		for i := 0; i < 64 - ones; i++ {
+		for i := 0; i < 64-ones; i++ {
 			upperFirst ^= uint64(1) << uint(i)
 		}
 		upperFirst ^= lowerFirst
 	} else {
 		upperFirst = lowerFirst
 		upperSecond = uint64(0)
-		for i := 0; i < 128 - ones; i++ {
+		for i := 0; i < 128-ones; i++ {
 			upperSecond ^= uint64(1) << uint(i)
 		}
 		upperSecond ^= lowerSecond
@@ -289,8 +289,8 @@ func GetBorderAddressesFromNetwork(network *net.IPNet) (*net.IP, *net.IP) {
 	var baseAddrBytes []byte
 	var topAddrBytes []byte
 	for i := range network.IP {
-		baseAddrBytes = append(baseAddrBytes, network.IP[i] & network.Mask[i])
-		topAddrBytes = append(topAddrBytes, baseAddrBytes[i] | ^network.Mask[i])
+		baseAddrBytes = append(baseAddrBytes, network.IP[i]&network.Mask[i])
+		topAddrBytes = append(topAddrBytes, baseAddrBytes[i]|^network.Mask[i])
 	}
 	baseAddr := net.IP(baseAddrBytes)
 	topAddr := net.IP(topAddrBytes)

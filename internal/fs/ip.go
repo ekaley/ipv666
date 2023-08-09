@@ -3,9 +3,9 @@ package fs
 import (
 	"encoding/hex"
 	"errors"
-	"github.com/lavalamp-/ipv666/internal/logging"
-	"github.com/lavalamp-/ipv666/internal/modeling"
-	"github.com/lavalamp-/ipv666/internal/persist"
+	"github.com/ekaley/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/modeling"
+	"github.com/ekaley/ipv666/internal/persist"
 	"io/ioutil"
 	"net"
 	"strings"
@@ -83,11 +83,11 @@ func ReadIPsFromBinaryFileBytes(toParse []byte) []*net.IP {
 func ParseIPsFromBytes(toParse []byte) ([]*net.IP, error) {
 	split := strings.Split(string(toParse), "\n")
 	toCheck := split[0]
-	if strings.Contains(toCheck, ":") {  // Standard ASCII hex with colons
+	if strings.Contains(toCheck, ":") { // Standard ASCII hex with colons
 		return ReadIPsFromHexFileBytes(toParse), nil
-	} else if len(toCheck) == 32 {  // ASCII hex without colons
+	} else if len(toCheck) == 32 { // ASCII hex without colons
 		return ReadIPsFromFatHexFileBytes(toParse), nil
-	} else if len(toParse) % 16 == 0 {  // Binary representation
+	} else if len(toParse)%16 == 0 { // Binary representation
 		return ReadIPsFromBinaryFileBytes(toParse), nil
 	} else { // IP address tree format
 		result, err := ReadIPsFromAddressTreeBytes(toParse)
@@ -106,4 +106,3 @@ func ReadIPsFromHexFile(filePath string) ([]*net.IP, error) {
 	}
 	return ReadIPsFromHexFileBytes(fileContent), nil
 }
-

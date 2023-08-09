@@ -1,9 +1,9 @@
 package scan
 
 import (
-	"github.com/lavalamp-/ipv666/internal/config"
-	"github.com/lavalamp-/ipv666/internal/logging"
-	"github.com/lavalamp-/ipv666/internal/validation"
+	"github.com/ekaley/ipv666/internal/config"
+	"github.com/ekaley/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/validation"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"runtime"
@@ -28,9 +28,9 @@ or not a target network range is an aliased network range.
 `)
 
 var Cmd = &cobra.Command{
-	Use:			"scan",
-	Short:			"Perform scanning functions",
-	Long:			scanLongDesc,
+	Use:   "scan",
+	Short: "Perform scanning functions",
+	Long:  scanLongDesc,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 
 		bandwidth := viper.GetString("PingScanBandwidth")

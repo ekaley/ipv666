@@ -3,8 +3,8 @@ package sync
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/lavalamp-/ipv666/internal/addressing"
-	"github.com/lavalamp-/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/addressing"
+	"github.com/ekaley/ipv666/internal/logging"
 	"github.com/rcrowley/go-metrics"
 	"github.com/spf13/viper"
 	"io/ioutil"
@@ -70,7 +70,7 @@ func syncIpAddressesRoutine(toSync []*net.IP) error {
 
 	logging.Debugf("Attempting to sync %d addresses to remote server.", len(toSync))
 
-	client := http.Client {
+	client := http.Client{
 		Timeout: time.Duration(viper.GetInt("SyncTimeout")) * time.Second,
 	}
 

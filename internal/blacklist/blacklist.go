@@ -3,8 +3,8 @@ package blacklist
 import (
 	"bufio"
 	"encoding/binary"
-	"github.com/lavalamp-/ipv666/internal/addressing"
-	"github.com/lavalamp-/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/addressing"
+	"github.com/ekaley/ipv666/internal/logging"
 	"net"
 	"os"
 	"sort"
@@ -15,18 +15,18 @@ type ipNets struct {
 }
 
 type NetworkBlacklist struct {
-	nets			map[int]*ipNets
-	masks			map[int]*[2]uint64
-	maskLengths		[]int
-	count			int
+	nets        map[int]*ipNets
+	masks       map[int]*[2]uint64
+	maskLengths []int
+	count       int
 }
 
-func NewNetworkBlacklist(nets []*net.IPNet) (*NetworkBlacklist) {
+func NewNetworkBlacklist(nets []*net.IPNet) *NetworkBlacklist {
 	toReturn := &NetworkBlacklist{
-		nets:			make(map[int]*ipNets),
-		masks:			make(map[int]*[2]uint64),
-		maskLengths:	[]int{},
-		count:			0,
+		nets:        make(map[int]*ipNets),
+		masks:       make(map[int]*[2]uint64),
+		maskLengths: []int{},
+		count:       0,
 	}
 
 	// Build the per-length masks
@@ -65,7 +65,7 @@ func (blacklist *NetworkBlacklist) AddNetworks(toAdd []*net.IPNet) (int, int) {
 	return addedCount, skippedCount
 }
 
-func (blacklist *NetworkBlacklist) AddNetwork(toAdd *net.IPNet) (bool) {
+func (blacklist *NetworkBlacklist) AddNetwork(toAdd *net.IPNet) bool {
 
 	if blacklist.IsNetworkBlacklisted(toAdd) {
 		return false
@@ -91,10 +91,10 @@ func (blacklist *NetworkBlacklist) AddNetwork(toAdd *net.IPNet) (bool) {
 
 }
 
-func (blacklist *NetworkBlacklist) CleanIPList(toClean []*net.IP, emitFreq int) ([]*net.IP) {
+func (blacklist *NetworkBlacklist) CleanIPList(toClean []*net.IP, emitFreq int) []*net.IP {
 	var toReturn []*net.IP
 	for i, curClean := range toClean {
-		if i % emitFreq == 0 && i != 0 {
+		if i%emitFreq == 0 && i != 0 {
 			logging.Debugf("Cleaning entry %d out of %d.", i, len(toClean))
 		}
 		if !blacklist.IsIPBlacklisted(curClean) {
@@ -104,7 +104,7 @@ func (blacklist *NetworkBlacklist) CleanIPList(toClean []*net.IP, emitFreq int) 
 	return toReturn
 }
 
-func (blacklist *NetworkBlacklist) updateMaskLengths(maskLength int) () {
+func (blacklist *NetworkBlacklist) updateMaskLengths(maskLength int) {
 	blacklist.maskLengths = append(blacklist.maskLengths, maskLength)
 	sort.Ints(blacklist.maskLengths)
 }
@@ -132,23 +132,23 @@ func (blacklist *NetworkBlacklist) getNetworkFromAddress(toTest *net.IP) ([2]uin
 		}
 	}
 
-	return [2]uint64{0,0}, -1, false
+	return [2]uint64{0, 0}, -1, false
 
 }
 
-func (blacklist *NetworkBlacklist) IsNetworkBlacklisted(toTest *net.IPNet) (bool) {
+func (blacklist *NetworkBlacklist) IsNetworkBlacklisted(toTest *net.IPNet) bool {
 	//TODO make sure this logic isn't flawed. I'm fairly certain that if both the top and bottom of the network
 	// are blacklisted then the network is, in its entirety, blacklisted as well.
 	top, bottom := addressing.GetBorderAddressesFromNetwork(toTest)
 	return blacklist.IsIPBlacklisted(top) && blacklist.IsIPBlacklisted(bottom)
 }
 
-func (blacklist *NetworkBlacklist) IsIPBlacklisted(toTest *net.IP) (bool) {
+func (blacklist *NetworkBlacklist) IsIPBlacklisted(toTest *net.IP) bool {
 	_, _, found := blacklist.getNetworkFromAddress(toTest)
 	return found
 }
 
-func (blacklist *NetworkBlacklist) GetBlacklistingNetworkFromIP(toTest *net.IP) (*net.IPNet) {
+func (blacklist *NetworkBlacklist) GetBlacklistingNetworkFromIP(toTest *net.IP) *net.IPNet {
 	uints, length, found := blacklist.getNetworkFromAddress(toTest)
 	if !found {
 		return nil
@@ -157,7 +157,7 @@ func (blacklist *NetworkBlacklist) GetBlacklistingNetworkFromIP(toTest *net.IP) 
 	}
 }
 
-func (blacklist *NetworkBlacklist) GetBlacklistingNetworkFromNetwork(toTest *net.IPNet) (*net.IPNet) {
+func (blacklist *NetworkBlacklist) GetBlacklistingNetworkFromNetwork(toTest *net.IPNet) *net.IPNet {
 	base, top := addressing.GetBorderAddressesFromNetwork(toTest)
 	baseNetwork := blacklist.GetBlacklistingNetworkFromIP(base)
 	if baseNetwork == nil {
@@ -171,15 +171,15 @@ func (blacklist *NetworkBlacklist) GetBlacklistingNetworkFromNetwork(toTest *net
 	}
 }
 
-func (blacklist *NetworkBlacklist) GetCount() (int) {
+func (blacklist *NetworkBlacklist) GetCount() int {
 	return blacklist.count
 }
 
-func (blacklist *NetworkBlacklist) GetMaskLengths() ([]int) {
+func (blacklist *NetworkBlacklist) GetMaskLengths() []int {
 	return blacklist.maskLengths
 }
 
-func (blacklist *NetworkBlacklist) GetNetworks() ([]*net.IPNet) {
+func (blacklist *NetworkBlacklist) GetNetworks() []*net.IPNet {
 	var toReturn []*net.IPNet
 	for _, maskLength := range blacklist.maskLengths {
 		for curNet := range blacklist.nets[maskLength].nets {
@@ -189,7 +189,7 @@ func (blacklist *NetworkBlacklist) GetNetworks() ([]*net.IPNet) {
 	return toReturn
 }
 
-func (blacklist *NetworkBlacklist) Clean(emitFreq int) (int) {
+func (blacklist *NetworkBlacklist) Clean(emitFreq int) int {
 	var newNetworks []*net.IPNet
 	numCleaned := 0
 	loopCount := 0
@@ -207,7 +207,7 @@ func (blacklist *NetworkBlacklist) Clean(emitFreq int) (int) {
 				}
 			}
 			loopCount++
-			if loopCount % emitFreq == 0 {
+			if loopCount%emitFreq == 0 {
 				logging.Debugf("Processing %d out of %d in blacklist cleaning.", loopCount, blacklist.count)
 			}
 		}
@@ -232,7 +232,7 @@ func ReadNetworkBlacklistFromFile(filePath string) (*NetworkBlacklist, error) {
 	return NewNetworkBlacklist(networks), nil
 }
 
-func WriteNetworkBlacklistToFile(filePath string, blacklist *NetworkBlacklist) (error) {
+func WriteNetworkBlacklistToFile(filePath string, blacklist *NetworkBlacklist) error {
 	file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
 		return err
@@ -251,6 +251,6 @@ func WriteNetworkBlacklistToFile(filePath string, blacklist *NetworkBlacklist) (
 		}
 	}
 	writer.Flush()
-	
+
 	return nil
 }

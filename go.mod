@@ -1,4 +1,4 @@
-module github.com/lavalamp-/ipv666
+module github.com/ekaley/ipv666
 
 go 1.20
 
@@ -62,6 +62,6 @@ require (
 	golang.org/x/text v0.3.0 // indirect
 	golang.org/x/tools v0.0.0-20181221001348-537d06c36207 // indirect
 	google.golang.org/appengine v1.2.0 // indirect
-	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v2 v2.2.2 // indirect
 )

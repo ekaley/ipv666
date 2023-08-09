@@ -3,15 +3,15 @@ package statemachine
 import (
 	"errors"
 	"fmt"
-	"github.com/lavalamp-/ipv666/internal/config"
-	"github.com/lavalamp-/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/config"
+	"github.com/ekaley/ipv666/internal/logging"
 	"github.com/rcrowley/go-metrics"
 	"github.com/spf13/viper"
 	"io/ioutil"
 	"time"
 )
 
-//noinspection GoSnakeCaseUsage
+// noinspection GoSnakeCaseUsage
 const (
 	GEN_ADDRESSES State = iota
 	PING_SCAN_ADDR
@@ -40,7 +40,7 @@ func init() {
 	}
 }
 
-func getTimerKeyForLoop(loop int) (string) {
+func getTimerKeyForLoop(loop int) string {
 	return fmt.Sprintf("loop.state_%d.time", loop)
 }
 
@@ -66,7 +66,7 @@ func fetchStateFromFile(filePath string) (State, error) {
 }
 
 func postScanCleanup() error {
-	
+
 	// Process results of ping scan into a set of network ranges
 	err := generateScanResultsNetworkRanges()
 	if err != nil {
@@ -165,7 +165,7 @@ func RunStateMachine() error {
 				return err
 			}
 		case FAN_OUT_64:
-			// Fan out to find neighboring /64 networks from the discovered address set, and 
+			// Fan out to find neighboring /64 networks from the discovered address set, and
 			// monotonically-increasing addresses from each /64
 			err := fanOutSlash64s()
 			if err != nil {

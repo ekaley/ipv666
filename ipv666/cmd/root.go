@@ -3,12 +3,12 @@ package cmd
 import (
 	"bufio"
 	"fmt"
-	"github.com/lavalamp-/ipv666/internal/config"
-	"github.com/lavalamp-/ipv666/internal/logging"
-	"github.com/lavalamp-/ipv666/internal/shell"
-	"github.com/lavalamp-/ipv666/internal/validation"
-	"github.com/lavalamp-/ipv666/ipv666/cmd/generate"
-	"github.com/lavalamp-/ipv666/ipv666/cmd/scan"
+	"github.com/ekaley/ipv666/internal/config"
+	"github.com/ekaley/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/shell"
+	"github.com/ekaley/ipv666/internal/validation"
+	"github.com/ekaley/ipv666/ipv666/cmd/generate"
+	"github.com/ekaley/ipv666/ipv666/cmd/scan"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"io"
@@ -85,7 +85,7 @@ func cloudSyncOptIn() error {
 
 	// Check if the user isn't opted in to cloud sync, and it's been 7+ days since the last nag
 	now := time.Now().Unix()
-	if optIn == 0 && now - lastAsk > 604800 /* 7 days in seconds */ {
+	if optIn == 0 && now-lastAsk > 604800 /* 7 days in seconds */ {
 
 		// Prompt to opt-in to cloud sync
 		ok, err := shell.AskForApproval("Would you like to give back to the community and contribute to the cloud-sourced IPv6 dataset @ ipv6.exposed? [y/N]:")
@@ -119,9 +119,9 @@ address lists based on known bad networks.
 `)
 
 var rootCmd = &cobra.Command{
-	Use:		"ipv666",
-	Short:		"IPv6 address enumeration tool set",
-	Long:		rootLongDesc,
+	Use:   "ipv666",
+	Short: "IPv6 address enumeration tool set",
+	Long:  rootLongDesc,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 
 		logLevel := viper.GetString("LogLevel")

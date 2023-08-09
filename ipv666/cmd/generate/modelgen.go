@@ -1,8 +1,8 @@
 package generate
 
 import (
-	"github.com/lavalamp-/ipv666/internal/app"
-	"github.com/lavalamp-/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/app"
+	"github.com/ekaley/ipv666/internal/logging"
 	"github.com/spf13/cobra"
 	"os"
 	"strings"
@@ -23,9 +23,9 @@ an IPv6 address file.
 `)
 
 var modelgenCmd = &cobra.Command{
-	Use:		"model",
-	Short:		"Generate a predictive model",
-	Long:		modelgenLongDesc,
+	Use:   "model",
+	Short: "Generate a predictive model",
+	Long:  modelgenLongDesc,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 
 		inputPath, err := cmd.PersistentFlags().GetString("input")

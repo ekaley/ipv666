@@ -1,10 +1,10 @@
 package app
 
 import (
-	"github.com/lavalamp-/ipv666/internal/addressing"
-	"github.com/lavalamp-/ipv666/internal/data"
-	"github.com/lavalamp-/ipv666/internal/logging"
-	"github.com/lavalamp-/ipv666/internal/modeling"
+	"github.com/ekaley/ipv666/internal/addressing"
+	"github.com/ekaley/ipv666/internal/data"
+	"github.com/ekaley/ipv666/internal/logging"
+	"github.com/ekaley/ipv666/internal/modeling"
 	"github.com/spf13/viper"
 	"net"
 )
@@ -42,7 +42,7 @@ func RunAddrGen(modelPath string, outputPath string, fromNetwork string, genCoun
 
 	logging.Infof("Successfully generated %d IP addresses. Writing results to file at path '%s'.", genCount, outputPath)
 
-	err = addressing.WriteIPsToHexFile(outputPath, generatedAddrs)  //TODO allow users to specify what type of file to write
+	err = addressing.WriteIPsToHexFile(outputPath, generatedAddrs) //TODO allow users to specify what type of file to write
 
 	if err != nil {
 		logging.Error(err)
