@@ -2,16 +2,17 @@ package logging
 
 import (
 	"fmt"
-	"github.com/fatih/color"
-	"github.com/natefinch/lumberjack"
-	"github.com/spf13/viper"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/fatih/color"
+	"github.com/natefinch/lumberjack"
+	"github.com/spf13/viper"
 )
 
 const (
-	LEVEL_DEBUG		= iota
+	LEVEL_DEBUG = iota
 	LEVEL_INFO
 	LEVEL_SUCCESS
 	LEVEL_WARNING
@@ -39,8 +40,7 @@ func getLogLevel() int {
 	case "error":
 		return LEVEL_ERROR
 	default:
-		ErrorStringF(fmt.Sprintf("%s is not a valid log level", configLevel))
-		return -1
+		return LEVEL_DEBUG
 	}
 }
 
@@ -114,9 +114,9 @@ func SetupLogging() {
 		log.SetFlags(log.Flags() & (log.Ldate | log.Ltime))
 		log.SetOutput(&lumberjack.Logger{
 			Filename:   viper.GetString("LogFilePath"),
-			MaxSize:    viper.GetInt("LogFileMBSize"),		// megabytes
+			MaxSize:    viper.GetInt("LogFileMBSize"), // megabytes
 			MaxBackups: viper.GetInt("LogFileMaxBackups"),
-			MaxAge:     viper.GetInt("LogFileMaxAge"),		// days
+			MaxAge:     viper.GetInt("LogFileMaxAge"), // days
 			Compress:   viper.GetBool("CompressLogFiles"),
 		})
 	}
